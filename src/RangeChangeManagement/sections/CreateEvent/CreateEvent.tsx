@@ -5367,7 +5367,7 @@ function CreateEvent(props: any) {
                         {buttonText}
                       </Button>
                     </Grid>
-                    <Grid item xl={4} lg={4} md={4} sm={4} xs={12}>
+                    {/* <Grid item xl={4} lg={4} md={4} sm={4} xs={12}>
                       <Button
                         variant="contained"
                         color="primary"
@@ -5378,7 +5378,7 @@ function CreateEvent(props: any) {
                       >
                         Create Event
                       </Button>
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </Grid>
               </Grid>

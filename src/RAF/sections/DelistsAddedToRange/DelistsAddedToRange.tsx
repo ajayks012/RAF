@@ -35,6 +35,7 @@ import {
 // import DatePicker from '@mui/lab/DatePicker';
 import DateFnsUtils from '@date-io/date-fns'
 import React, { useState, useEffect } from 'react'
+import { tableBodyStyle, tableHeaderStyle, useStyles } from './styles'
 import {
   actionTypes,
   delistAddedToRangeCols,
@@ -42,111 +43,90 @@ import {
   massActions,
   productListCols,
   salesChannels,
+  delistToRangeData,
+  placeholderCols,
+  lineStatusOptions,
   // supplierCodes
 } from './DataConstants'
 // import TextFieldWithSearch from './sections/TextFieldWithSearch/TextFieldWithSearch'
 import { MultiSelect } from 'primereact/multiselect'
 import { Dropdown } from 'primereact/dropdown'
-import AutocompleteSelect from '../../../RangeChangeManagement/components/AutoCompleteSelect/AutocompleteSelect'
+import AutocompleteSelect from '../../components/AutoCompleteSelect/AutocompleteSelect'
+import DialogHeader from '../../components/DialogHeader/DialogHeader'
 
-const useStyles = makeStyles((theme: any) => {
-  return {
-    backButton: {
-      border: 0,
-      color: 'blue',
-      backgroundColor: 'white',
-      cursor: 'pointer',
-      fontSize: '18px',
-    },
-    uploadTextfield: {
-      [theme.breakpoints.up('sm')]: {
-        width: 200,
-      },
-      [theme.breakpoints.down('sm')]: {
-        width: 100,
-      },
+// const useStyles = makeStyles((theme: any) => {
+//   return {
+//     backButton: {
+//       border: 0,
+//       color: 'blue',
+//       backgroundColor: 'white',
+//       cursor: 'pointer',
+//       fontSize: '18px',
+//     },
+//     uploadTextfield: {
+//       [theme.breakpoints.up('sm')]: {
+//         width: 200,
+//       },
+//       [theme.breakpoints.down('sm')]: {
+//         width: 100,
+//       },
 
-      height: '32px',
-      cursor: 'pointer',
-    },
-    uploadButton: {
-      width: 100,
-      height: '32px',
-      cursor: 'pointer',
-      backgroundColor: teal[900],
-      color: 'white',
-    },
-    dialogTitle: {
-      backgroundColor: theme.palette.primary.main,
-      color: 'white',
-      alignItems: 'baseline',
-    },
-    dialogCloseButton: {
-      color: '#ff5252',
-      backgroundColor: theme.palette.primary.main,
-      fontSize: '18px',
-      '&:hover': {
-        color: '#d50000',
-        backgroundColor: '#00e676',
-        cursor: 'pointer',
-        borderRadius: 10,
-      },
-    },
-    submitButtons: {
-      width: 'auto',
-      backgroundColor: teal[900],
-      color: 'white',
-      height: 40,
-      '&:hover': {
-        backgroundColor: teal[600],
-        color: 'white',
-      },
-    },
-    placeholderCountStyle: {
-      borderTop: 'none',
-      borderLeft: 'none',
-      borderRight: 'none',
-      fontSize: '1rem',
-      padding: '10px',
-      marginTop: '5px',
-    },
-    placeholderSelect: {
-      width: '100%',
-      fontSize: '1rem',
-      padding: '5px',
-      marginTop: '5px',
-    },
-    addActionFields: {
-      height: '40px',
-      width: '100%',
-    },
-  }
-})
-
-const delistToRangeData = [
-  {
-    uniqueId: 325655,
-    eventName: 'Household & Pet Food',
-    dueDate: '05-Nov-22',
-    status: 'Not started',
-    resetType: 'Full Range Reset',
-    launchDate: '3-Jan-22',
-    group: 'Frozen',
-    category: 'Frozen Food',
-    department: '3-Jan-22',
-    clearancePriceApplied: 'Y',
-    GSCOPDateCheckRequired: 'Y',
-    stopOrder: 'Y',
-    buyer: 'helen.barker@morrisonsplc.co.uk',
-    buyingAssistant: 'paul.allman@morrisonsplc.co.uk',
-    ownBrandManager: 'naomi.anderson@morrisonsplc.co.uk',
-    seniorBuyingManager: 'sophie.olding@morrisonsplc.co.uk',
-    merchandiser: 'helen.barker@morrisonsplc.co.uk',
-    rangeResetManager: 'naomi.anderson@morrisonsplc.co.uk',
-    categoryDirector: 'sophie.olding@morrisonsplc.co.uk',
-    supplyChainSplst: 'Cristine Black',
-  },
-]
+//       height: '32px',
+//       cursor: 'pointer',
+//     },
+//     uploadButton: {
+//       width: 100,
+//       height: '32px',
+//       cursor: 'pointer',
+//       backgroundColor: teal[900],
+//       color: 'white',
+//     },
+//     dialogTitle: {
+//       backgroundColor: theme.palette.primary.main,
+//       color: 'white',
+//       alignItems: 'baseline',
+//     },
+//     dialogCloseButton: {
+//       color: '#ff5252',
+//       backgroundColor: theme.palette.primary.main,
+//       fontSize: '18px',
+//       '&:hover': {
+//         color: '#d50000',
+//         backgroundColor: '#00e676',
+//         cursor: 'pointer',
+//         borderRadius: 10,
+//       },
+//     },
+//     submitButtons: {
+//       width: 'auto',
+//       backgroundColor: teal[900],
+//       color: 'white',
+//       height: 40,
+//       '&:hover': {
+//         backgroundColor: teal[600],
+//         color: 'white',
+//       },
+//     },
+//     placeholderCountStyle: {
+//       borderTop: 'none',
+//       borderLeft: 'none',
+//       borderRight: 'none',
+//       fontSize: '1rem',
+//       padding: '10px',
+//       marginTop: '5px',
+//     },
+//     placeholderSelect: {
+//       width: '100%',
+//       fontSize: '1rem',
+//       padding: '5px',
+//       marginTop: '5px',
+//     },
+//     addActionFields: {
+//       height: '40px',
+//       width: '100%',
+//     },
+//   }
+// })
 
 function DelistsAddedToRange() {
   const classes = useStyles()
@@ -155,9 +135,11 @@ function DelistsAddedToRange() {
   const radio = <Radio color="primary" />
 
   const [productType, setProductType] = useState<any>('existingProducts')
-  const [actionType, setActionType] = useState<any>('Delist MIN')
+  const [actionType, setActionType] = useState<any>()
+  const [min, setMin] = useState<any>('')
   const [existingSearchFields, setExistingSearchFields] = useState<any>()
   const [productId, setProductId] = useState<any>('')
+  const [noOfStores, setNoOfStores] = useState<any>('')
   const [storeCode, setStoreCode] = useState<any>('')
   const [supplier, setSupplier] = useState<any>('')
   const [supplierSiteNumber, setSupplierSiteNumber] = useState<any>('')
@@ -170,18 +152,25 @@ function DelistsAddedToRange() {
   const [supplierCode, setSupplierCode] = useState<any>()
   const [selectedSalesChannels, setSelectedSalesChannels] = useState<any>()
   const [placeholderCount, setPlaceholderCount] = useState<any>('')
+  const [placeholderProducts, setPlaceholderProducts] = useState<any>([])
   const [newProductId, setNewProductId] = useState<any>('')
   const [selectedProductListItems, setSelectedProductListItems] =
     useState<any>()
   const [bulkActions, setBulkActions] = useState<any>()
   const [openActionTypeDialog, setOpenActionTypeDialog] = useState(false)
-  const [minOrPin, setMinOrPin] = useState<any>('')
+
   const [replaceMinOrPin, setReplaceMinOrPin] = useState<any>('')
   const [fromDate, setFromDate] = useState<any>()
   const [toDate, setToDate] = useState<any>()
   const [addStoreCode, setAddStoreCode] = useState<any>('')
   const [comments, setComments] = useState<any>('')
   const [openPlaceholderDialog, setOpenPlaceholderDialog] = useState(false)
+  const [openPlaceholderUpload, setOpenPlaceholderUpload] = useState(false)
+  const [placeholderFile, setPlaceholderFile] = useState<any>()
+
+  const [selectedPlaceholderData, setSelectedPlaceholderData] = useState<any>(
+    []
+  )
 
   useEffect(() => {
     setExistingSearchFields([
@@ -262,18 +251,6 @@ function DelistsAddedToRange() {
   //     return <TextFieldWithSearch value={buyingMinIngredients} onChangeFn={setBuyingMinIngredients} onSearch={console.log} />
   // }
 
-  const lineStatusTemplate = (rowData: any) => {
-    console.log(rowData)
-    if (rowData['min/pin']) {
-      return (
-        <select value={rowData.lineStatus}>
-          <option value="Request for">Request for</option>
-          <option value="Draft">Draft</option>
-        </select>
-      )
-    }
-  }
-
   const clearancePricingTemplate = (rowData: any) => {
     if (rowData['min/pin']) {
       if (rowData.clearancePricing === 'NA') {
@@ -321,11 +298,12 @@ function DelistsAddedToRange() {
   }
 
   const handleUploadDialogOpen = () => {
-    setOpenUploadDialog(true)
+    actionType && setOpenUploadDialog(true)
   }
 
   const handleUploadDialogClose = () => {
     setOpenUploadDialog(false)
+    setUploadedFile(null)
   }
 
   const handleFileUpload = (event: any) => {
@@ -351,126 +329,55 @@ function DelistsAddedToRange() {
           const ws = wb.Sheets[wsname]
           const data = xlsx.utils.sheet_to_json(ws)
           console.log(data)
+          const data1 = xlsx.utils.sheet_to_json(ws, { header: 1 })
+          const cols: any = data1[0]
 
           let newData = data.map((d: any) => {
-            if (d['Effective Date (From)'] || d['Effective Date (To)']) {
-              var fromDate1 = new Date(
-                Math.round(
-                  (d['Effective Date (From)'] - (25567 + 1)) * 86400 * 1000
-                )
-              )
-              var convertedFromDate = fromDate1.toISOString().split('T')[0]
-              console.log(convertedFromDate)
-              var toDate1 = new Date(
-                Math.round(
-                  (d['Effective Date (To)'] - (25567 + 1)) * 86400 * 1000
-                )
-              )
-              var convertedToDate = toDate1.toISOString().split('T')[0]
-              console.log(convertedToDate)
-
-              // uploadData.push({
-              //     "action/type": d['Action/ Type'],
-              //     "min/pin": d['MIN/ PIN'],
-              //     "description": d['Description'] ? d['Description'] : "",
-              //     "replaceMin/pin": d['Replace MIN/ PIN'] ? d['Replace MIN/ PIN'] : "",
-              //     "fromDate": d['Effective Date (From)'] ? convertedFromDate : "",
-              //     "toDate": d['Effective Date (To)'] ? convertedToDate : "",
-              //     "lineStatus": d['Line Status'] ? d['Line Status'] : "Request For",
-              //     "clearancePricing": d['Clearance Pricing'] ? d['Clearance Pricing'] : "Include in",
-              //     "clearDepotBy": d['Clear Depot By'] ? d['Clear Depot By'] : "Week-4",
-              // })
-
-              // if (d['Replace MIN/ PIN']) {
-              //     replaceData.push(
-              //         {
-              //             "action/type": d['Action/ Type'],
-              //             "min/pin": d['Replace MIN/ PIN'],
-              //             "description": d['Description'] ? d['Description'] : "NA",
-              //             "replaceMin/pin": "NA",
-              //             "fromDate": d['Effective Date (From)'] ? convertedFromDate : "NA",
-              //             "toDate": d['Effective Date (To)'] ? convertedToDate : "NA",
-              //             "lineStatus": d['Line Status'] ? d['Line Status'] : "Request For",
-              //             "clearancePricing": d['Clearance Pricing'] ? d['Clearance Pricing'] : "Include in",
-              //             "clearDepotBy": d['Clear Depot By'] ? d['Clear Depot By'] : "Week-4",
-              //         }
-              //     )
-              // }
+            if (d[cols[0]] && d[cols[0]] === 'Delist MIN') {
               return {
-                'action/type': d['Action/ Type'],
-                'min/pin': d['MIN/ PIN'],
-                description: d['Description'] ? d['Description'] : 'NA',
-                'replaceMin/pin': d['Replace MIN/ PIN']
-                  ? d['Replace MIN/ PIN']
-                  : 'NA',
-                fromDate: d['Effective Date (From)'] ? convertedFromDate : 'NA',
-                toDate: d['Effective Date (To)'] ? convertedToDate : 'NA',
-                lineStatus: d['Line Status'] ? d['Line Status'] : 'Request For',
-                clearancePricing: d['Clearance Pricing']
-                  ? d['Clearance Pricing']
-                  : 'Include in',
-                clearDepotBy: d['Clear Depot By']
-                  ? d['Clear Depot By']
-                  : 'Week-4',
+                actionType: d[cols[0]] ? d[cols[0]] : '',
+                min: d[cols[1]] ? d[cols[1]] : '',
+                comments: d[cols[2]] ? d[cols[2]] : '',
+                lineStatus: 'Request For Stock Count',
+                man: 'NA',
+                ingredientMin: 'NA',
+                pin: '111111',
+                description: 'Blahh Blahh',
+                replaceMin: 'NA',
+                replaceMinDescription: 'NA',
+                existingSupplier: 'Futura-1001098',
+                existingSupplierSite: 'Tetbury-9866',
+                numberOfRangeStores: 'NA',
+                storeCode: 'NA',
               }
-            } else {
-              // uploadData.push({
-              //     "action/type": d['Action/ Type'],
-              //     "min/pin": d['MIN/ PIN'],
-              //     "description": d['Description'] ? d['Description'] : "NA",
-              //     "replaceMin/pin": d['Replace MIN/ PIN'] ? d['Replace MIN/ PIN'] : "NA",
-              //     "fromDate": "NA",
-              //     "toDate": "NA",
-              //     "lineStatus": d['Line Status'] ? d['Line Status'] : "Request For",
-              //     "clearancePricing": d['Clearance Pricing'] ? d['Clearance Pricing'] : "Include in",
-              //     "clearDepotBy": d['Clear Depot By'] ? d['Clear Depot By'] : "Week-4",
-              // })
-              // if (d['Replace MIN/ PIN']) {
-              //     replaceData.push(
-              //         {
-              //             "action/type": d['Action/ Type'],
-              //             "min/pin": d['Replace MIN/ PIN'],
-              //             "description": d['Description'] ? d['Description'] : "NA",
-              //             "replaceMin/pin": "NA",
-              //             "fromDate": "NA",
-              //             "toDate": "NA",
-              //             "lineStatus": d['Line Status'] ? d['Line Status'] : "Request For",
-              //             "clearancePricing": d['Clearance Pricing'] ? d['Clearance Pricing'] : "Include in",
-              //             "clearDepotBy": d['Clear Depot By'] ? d['Clear Depot By'] : "Week-4",
-              //         }
-              //     )
-
-              // }
+            } else if (d[cols[0]] && d[cols[0]] === 'New MIN') {
               return {
-                'action/type': d['Action/ Type'],
-                'min/pin': d['MIN/ PIN'],
-                description: d['Description'] ? d['Description'] : 'NA',
-                'replaceMin/pin': d['Replace MIN/ PIN']
-                  ? d['Replace MIN/ PIN']
-                  : 'NA',
-                fromDate: 'NA',
-                toDate: 'NA',
-                lineStatus: d['Line Status'] ? d['Line Status'] : 'Request For',
-                clearancePricing: d['Clearance Pricing']
-                  ? d['Clearance Pricing']
-                  : 'Include in',
-                clearDepotBy: d['Clear Depot By']
-                  ? d['Clear Depot By']
-                  : 'Week-4',
+                actionType: d[cols[0]] ? d[cols[0]] : '',
+                min: d[cols[1]] ? d[cols[1]] : '',
+                numberOfRangeStores: d[cols[2]] ? d[cols[2]] : '',
+                storeCode: d[cols[3]] ? d[cols[3]] : '',
+                comments: d[cols[4]] ? d[cols[4]] : '',
+                lineStatus: 'Draft',
+                man: 'NA',
+                ingredientMin: 'NA',
+                pin: '111111',
+                description: 'Blahh Blahh',
+                replaceMin: 'NA',
+                replaceMinDescription: 'NA',
+                existingSupplier: 'Futura-1001098',
+                existingSupplierSite: 'Tetbury-9866',
               }
             }
           })
 
-          let replaceMinData = newData.filter((d: any) => {
-            return d['replaceMin/pin'] !== 'NA'
-          })
-
           console.log(newData)
-          console.log(replaceMinData)
-          let tableData = [...newData]
-          // tableData.append(...replaceData)
-          console.log(tableData)
-          setImportedData(newData)
+          if (importedData && importedData.length > 0) {
+            setImportedData((prevState: any) => {
+              return [...prevState, ...newData]
+            })
+          } else {
+            setImportedData([...newData])
+          }
         }
 
         reader.readAsArrayBuffer(uploadedFile)
@@ -493,46 +400,15 @@ function DelistsAddedToRange() {
           borderRadius: 5,
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            height: 30,
-            flexDirection: 'row',
-            borderRadius: 10,
-          }}
-          className={classes.dialogTitle}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              flexGrow: 1,
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="subtitle1">Upload RAF</Typography>
-          </Box>
-          <Box
-            sx={{
-              paddingRight: 2,
-            }}
-          >
-            <button
-              style={{
-                border: 0,
-                padding: 0,
-                height: 22,
-                width: 22,
-              }}
-              className={classes.dialogCloseButton}
-              onClick={handleUploadDialogClose}
-            >
-              <b>X</b>
-            </button>
-          </Box>
-        </Box>
+        <DialogHeader
+          title={`Upload ${actionType && actionType.value}`}
+          onClose={handleUploadDialogClose}
+        />
 
         <Box sx={{ p: 1 }}>
-          <Typography variant="body2">Upload RAF</Typography>
+          <Typography variant="body2">
+            Upload {actionType && actionType.value}
+          </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -569,8 +445,10 @@ function DelistsAddedToRange() {
           }}
         >
           <Box>
-            Supported file type in MS Excel
-            <i className="pi pi-file-excel" style={{ fontSize: '18px' }}></i>
+            <Typography color="primary">
+              Supported file type in MS Excel
+              <i className="pi pi-file-excel" style={{ fontSize: '18px' }}></i>
+            </Typography>
           </Box>
         </Box>
 
@@ -581,7 +459,12 @@ function DelistsAddedToRange() {
             justifyContent: 'right',
           }}
         >
-          <Button className={classes.submitButtons} onClick={handleUpload}>
+          <Button
+            //   className={classes.submitButtons}
+            variant="contained"
+            color="primary"
+            onClick={handleUpload}
+          >
             Select
           </Button>
         </Box>
@@ -589,13 +472,16 @@ function DelistsAddedToRange() {
     </Dialog>
   )
 
-  const handleActionTypeDialogOpen = (e: any) => {
-    e.preventDefault()
-    setOpenActionTypeDialog(true)
+  const handleActionTypeDialogOpen = () => {
+    actionType && setOpenActionTypeDialog(true)
   }
 
   const handleActionTypeDialogClose = () => {
     setOpenActionTypeDialog(false)
+    setMin('')
+    setComments('')
+    setNoOfStores('')
+    setStoreCode('')
   }
 
   const handleFromDate = (date: any) => {
@@ -625,17 +511,17 @@ function DelistsAddedToRange() {
   const handleAddProduct = (e: any) => {
     e.preventDefault()
     if (
-      minOrPin ||
+      min ||
       replaceMinOrPin ||
       fromDate ||
       toDate ||
       addStoreCode ||
       comments
     ) {
-      if (actionType !== 'Derange MIN') {
+      if (actionType && actionType.value !== 'Derange MIN') {
         let addData = {
           'action/type': actionType && actionType,
-          'min/pin': minOrPin && minOrPin,
+          'min/pin': min && min,
           description: 'NA',
           'replaceMin/pin': replaceMinOrPin ? replaceMinOrPin : 'NA',
           fromDate: fromDate ? fromDate : 'NA',
@@ -646,8 +532,8 @@ function DelistsAddedToRange() {
         }
         console.log(addData)
         if (importedData) {
-          setImportedData((prevSate: any) => {
-            let newData = [...importedData]
+          setImportedData((prevState: any) => {
+            let newData = [...prevState]
             newData.push(addData)
             return newData
           })
@@ -662,27 +548,93 @@ function DelistsAddedToRange() {
     }
   }
 
+  const handleManualRAF = () => {
+    console.log('clicked')
+
+    handleActionTypeDialogClose()
+    if (actionType.value === 'Delist MIN') {
+      if (min != '') {
+        console.log('hello')
+        const formData = {
+          actionType: actionType.value,
+          min: min,
+          comments: comments,
+          lineStatus: 'Request For Stock Count',
+          man: 'NA',
+          ingredientMin: 'NA',
+          pin: '111111',
+          description: 'Blahh Blahh',
+          replaceMin: 'NA',
+          replaceMinDescription: 'NA',
+          existingSupplier: 'Futura-1001098',
+          existingSupplierSite: 'Tetbury-9866',
+          numberOfRangeStores: 'NA',
+          storeCode: 'NA',
+        }
+        if (importedData && importedData.length > 0) {
+          setImportedData((prevState: any) => {
+            return [...prevState, formData]
+          })
+        } else {
+          setImportedData([formData])
+        }
+      }
+    } else if (actionType.value === 'New MIN') {
+      if (min) {
+        console.log('hello')
+        const formData = {
+          actionType: actionType.value,
+          min: min,
+          comments: comments,
+          lineStatus: 'Draft',
+          man: 'NA',
+          ingredientMin: 'NA',
+          pin: '111111',
+          description: 'Blahh Blahh',
+          replaceMin: 'NA',
+          replaceMinDescription: 'NA',
+          existingSupplier: 'Futura-1001098',
+          existingSupplierSite: 'Tetbury-9866',
+          numberOfRangeStores: noOfStores ? noOfStores : 'NA',
+          storeCode: storeCode ? storeCode : 'NA',
+        }
+        if (importedData && importedData.length > 0) {
+          setImportedData((prevState: any) => {
+            return [...prevState, formData]
+          })
+        } else {
+          setImportedData([formData])
+        }
+      }
+    }
+  }
+
   const actionTypeDialog = (
-    <Dialog open={openActionTypeDialog} onClose={handleActionTypeDialogClose}>
+    <Dialog
+      open={openActionTypeDialog}
+      onClose={handleActionTypeDialogClose}
+      fullWidth
+      classes={{ paperFullWidth: classes.placeholderDialog }}
+    >
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          width: small ? '500px' : '260px',
+          //   width: small ? '500px' : '260px',
           // height: "250px",
           border: '3px solid green',
           borderRadius: 5,
           padding: '10px',
         }}
       >
-        <Box
+        {/* <Box
           sx={{
             display: 'flex',
             height: 30,
             flexDirection: 'row',
             borderRadius: 10,
           }}
-          className={classes.dialogTitle}
+          //   className={classes.dialogTitle}
         >
           <Box
             sx={{
@@ -705,18 +657,21 @@ function DelistsAddedToRange() {
                 height: 22,
                 width: 22,
               }}
-              className={classes.dialogCloseButton}
+              //   className={classes.dialogCloseButton}
               onClick={handleActionTypeDialogClose}
             >
               <b>X</b>
             </button>
           </Box>
-        </Box>
+        </Box> */}
+        <DialogHeader
+          title={`Add ${actionType && actionType.value}`}
+          onClose={handleActionTypeDialogClose}
+        />
 
-        <Box sx={{ p: 1 }}>
+        {/* <Box sx={{ p: 1 }}>
           <Typography variant="body2">Add {actionType}</Typography>
         </Box>
-        <form onSubmit={handleAddProduct}>
           <Box
             sx={{
               display: 'flex',
@@ -725,7 +680,6 @@ function DelistsAddedToRange() {
           >
             <table cellPadding={'10px'}>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                {/* <LocalizationProvider dateAdapter={AdapterDateFns}> */}
                 <thead
                   style={{
                     fontSize: '12px',
@@ -737,9 +691,9 @@ function DelistsAddedToRange() {
                     <th>
                       <TextField
                         variant="outlined"
-                        className={classes.addActionFields}
+                        // className={classes.addActionFields}
                         size="small"
-                        value={minOrPin}
+                        value={min}
                         onChange={(e: any) => setMinOrPin(e.target.value)}
                         required
                       />
@@ -750,7 +704,7 @@ function DelistsAddedToRange() {
                     <th>
                       <TextField
                         variant="outlined"
-                        className={classes.addActionFields}
+                        // className={classes.addActionFields}
                         size="small"
                         value={replaceMinOrPin}
                         onChange={(e: any) =>
@@ -776,14 +730,7 @@ function DelistsAddedToRange() {
                         }}
                         size="small"
                       />
-                      {/* <DatePicker
-                                                value={fromDate}
-                                                onChange={handleFromDate}
-                                                renderInput={(props: any) => (
-                                                    <TextField {...props} variant="outlined" />
-                                                )}
-                                                
-                                            /> */}
+                      
                     </th>
                   </tr>
 
@@ -803,14 +750,7 @@ function DelistsAddedToRange() {
                         }}
                         size="small"
                       />
-                      {/* <DatePicker
-                                                value={toDate}
-                                                onChange={handleToDate}
-                                                renderInput={(props: any) => (
-                                                    <TextField {...props} variant="outlined" />
-                                                )}
-                                                
-                                            /> */}
+                      
                     </th>
                   </tr>
 
@@ -820,7 +760,7 @@ function DelistsAddedToRange() {
                       <th>
                         <TextField
                           variant="outlined"
-                          className={classes.addActionFields}
+                          //   className={classes.addActionFields}
                           size="small"
                           value={addStoreCode}
                           onChange={(e: any) => setAddStoreCode(e.target.value)}
@@ -835,7 +775,7 @@ function DelistsAddedToRange() {
                     <th>
                       <TextField
                         variant="outlined"
-                        className={classes.addActionFields}
+                        // className={classes.addActionFields}
                         size="small"
                         value={comments}
                         onChange={(e: any) => setComments(e.target.value)}
@@ -845,7 +785,6 @@ function DelistsAddedToRange() {
                 </thead>
               </MuiPickersUtilsProvider>
 
-              {/* </LocalizationProvider> */}
             </table>
           </Box>
 
@@ -856,11 +795,163 @@ function DelistsAddedToRange() {
               justifyContent: 'right',
             }}
           >
-            <Button className={classes.submitButtons} type="submit">
+            <Button
+              // className={classes.submitButtons}
+              type="submit"
+            >
               Add
             </Button>
+          </Box> */}
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ p: 1 }}>
+            <Typography variant="subtitle2" color="primary">
+              {`Add ${actionType && actionType.value}`}
+            </Typography>
           </Box>
-        </form>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              p: 1,
+              width: '100%',
+            }}
+          >
+            {actionType && actionType.value === 'Delist MIN' && (
+              <>
+                <Box
+                  sx={{
+                    p: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    // flexGrow: '1',
+                  }}
+                >
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      Delist MIN
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      <input
+                        type="text"
+                        value={min}
+                        onChange={(e: any) => setMin(e.target.value)}
+                      />
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box
+                  sx={{
+                    p: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    // flexGrow: '1',
+                  }}
+                >
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      Comments
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      <input
+                        type="text"
+                        value={comments}
+                        onChange={(e: any) => setComments(e.target.value)}
+                      />
+                    </Typography>
+                  </Box>
+                </Box>
+              </>
+            )}
+
+            {actionType && actionType.value === 'New MIN' && (
+              <>
+                <Box sx={{ p: 1, display: 'flex', flexDirection: 'column' }}>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      New MIN
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      <input
+                        type="text"
+                        value={min}
+                        onChange={(e: any) => setMin(e.target.value)}
+                      />
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ p: 1, display: 'flex', flexDirection: 'column' }}>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      New no. of Range Stores
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      <input
+                        type="text"
+                        value={noOfStores}
+                        onChange={(e: any) => setNoOfStores(e.target.value)}
+                      />
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ p: 1, display: 'flex', flexDirection: 'column' }}>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      Store Code
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      <select
+                        placeholder="--Select--"
+                        value={storeCode}
+                        onChange={(e: any) => setStoreCode(e.target.value)}
+                        style={{ width: '160px' }}
+                      >
+                        <option value="001">Store-001</option>
+                      </select>
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ p: 1, display: 'flex', flexDirection: 'column' }}>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      Comments
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      <input
+                        type="text"
+                        value={comments}
+                        onChange={(e: any) => setComments(e.target.value)}
+                      />
+                    </Typography>
+                  </Box>
+                </Box>
+              </>
+            )}
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
+            <Box sx={{ p: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleManualRAF}
+              >
+                Save
+              </Button>
+            </Box>
+          </Box>
+        </Box>
       </Box>
     </Dialog>
   )
@@ -894,18 +985,23 @@ function DelistsAddedToRange() {
                   key={index}
                   field={col.field}
                   header={col.header}
-                  style={{
-                    width: col.width,
-                    fontSize: '0.9rem',
-                    padding: '0.5rem',
-                  }}
-                  headerStyle={{
-                    backgroundColor: teal[900],
-                    color: 'white',
-                    width: col.width,
-                    fontSize: '0.9rem',
-                    padding: '0.5rem',
-                  }}
+                  // style={{
+                  //   width: col.width,
+                  //   fontSize: '0.9rem',
+                  //   padding: '0.5rem',
+                  // }}
+                  // headerStyle={{
+                  //   backgroundColor: teal[900],
+                  //   color: 'white',
+                  //   width: col.width,
+                  //   fontSize: '0.9rem',
+                  //   padding: '0.5rem',
+                  // }}
+                  bodyStyle={tableBodyStyle(col.width)}
+                  headerStyle={tableHeaderStyle(
+                    col.width,
+                    theme.palette.primary.main
+                  )}
                   body={
                     // (col.field === "productId" && productIdTemplate)
                     // ||
@@ -1003,7 +1099,7 @@ function DelistsAddedToRange() {
           <input
             type="text"
             required
-            className={classes.placeholderCountStyle}
+            // className={classes.placeholderCountStyle}
             style={{
               width: small ? '88%' : '100%',
             }}
@@ -1067,141 +1163,95 @@ function DelistsAddedToRange() {
     console.log(importedData)
   }, [importedData])
 
-  const placeholderProducts = (
-    <form style={{ width: '100%' }} onSubmit={submitPlaceholderProducts}>
-      <Grid
-        item
-        container
-        xl={12}
-        lg={12}
-        md={12}
-        sm={12}
-        xs={12}
-        style={{
-          alignItems: 'center',
-          padding: '10px',
-        }}
-        spacing={2}
-      >
-        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-          How many new lines do you wish to enter?
-          <br />
-          <input
-            type="text"
-            required
-            className={classes.placeholderCountStyle}
-            style={{
-              width: small ? '88%' : '100%',
-            }}
-            value={placeholderCount}
-            onChange={(e: any) => setPlaceholderCount(e.target.value)}
-          />
-        </Grid>
+  //   const placeholderProducts = (
+  //     <Grid
+  //       item
+  //       container
+  //       xl={12}
+  //       lg={12}
+  //       md={12}
+  //       sm={12}
+  //       xs={12}
+  //       style={{
+  //         alignItems: 'center',
+  //         padding: '10px',
+  //       }}
+  //       spacing={2}
+  //     >
+  //       <Grid item container md={7} sm={12} xs={12}>
+  //         <Grid item xs={8}>
+  //           <Typography variant="subtitle2" color="primary">
+  //             How many new lines do you wish to enter?
+  //             <br />
+  //             <input
+  //               type="text"
+  //               required
+  //               // className={classes.placeholderCountStyle}
+  //               style={{
+  //                 width: small ? '88%' : '100%',
+  //               }}
+  //               value={placeholderCount}
+  //               onChange={(e: any) => setPlaceholderCount(e.target.value)}
+  //             />
+  //           </Typography>
+  //         </Grid>
+  //         <Grid
+  //           item
+  //           //   xl={2}
+  //           //   lg={2}
+  //           //   md={2}
+  //           //   sm={6}
+  //           xs={4}
+  //           style={{ textAlign: 'center' }}
+  //         >
+  //           <Button
+  //             variant="contained"
+  //             color="primary"
+  //             type="submit"
+  //             style={{ width: '80px' }}
+  //           >
+  //             ADD
+  //           </Button>
+  //         </Grid>
+  //       </Grid>
 
-        {/* <Grid item
-                    xl={2}
-                    lg={2}
-                    md={2}
-                    sm={6}
-                    xs={12}
-                >
-                    Supplier Code
-                    <br />
+  //       <Grid item sm={1} xs={12}>
+  //         <Typography variant="subtitle2" color="primary">
+  //           OR
+  //         </Typography>
+  //       </Grid>
+  //       <Grid item md={3} sm={12} xs={12}>
+  //         <Button
+  //           variant="contained"
+  //           color="primary"
+  //           // type="submit"
+  //           // style={{ width: '80px' }}
+  //         >
+  //           Upload File
+  //         </Button>
+  //       </Grid>
+  //     </Grid>
+  //   )
 
-                    <Dropdown
-                        value={supplierCode}
-                        options={supplierCodes}
-                        onChange={(e: any) => setSupplierCode(e.value)}
-                        optionLabel="label"
-                        placeholder='--- select ---'
-                        className={classes.placeholderSelect}
+  const handleTableStatusChange = (e: any) => {
+    let data: any = [...importedData]
+    data.lineStatus = e.target.value
+    setImportedData(data)
+  }
 
-                    />
-                    <input
-                        tabIndex={-1}
-                        autoComplete="off"
-                        style={{ opacity: 0, height: 0 }}
-                        value={supplierCode}
-                        // onChange={() => {}}
-                        required={true}
-                    />
-                </Grid> 
-
-                <Grid item
-                    xl={2}
-                    lg={2}
-                    md={2}
-                    sm={6}
-                    xs={12}
-                >
-                    Sales Channel
-                    <br />
-
-                    <MultiSelect
-                        value={selectedSalesChannels}
-                        options={salesChannels}
-                        onChange={(e: any) => setSelectedSalesChannels(e.value)}
-                        optionLabel="label"
-                        placeholder="--- Select ---"
-                        maxSelectedLabels={1}
-                        className={classes.placeholderSelect}
-                    />
-                    <input
-                        tabIndex={-1}
-                        autoComplete="off"
-                        style={{ opacity: 0, height: 0 }}
-                        value={selectedSalesChannels}
-                        // onChange={() => {}}
-                        required={true}
-                    />
-                </Grid>*/}
-
-        <Grid
-          item
-          xl={2}
-          lg={2}
-          md={2}
-          sm={6}
-          xs={12}
-          style={{ textAlign: 'center' }}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            style={{ width: '80px' }}
-          >
-            ADD
-          </Button>
-        </Grid>
-        <Grid
-          item
-          container
-          xl={4}
-          lg={4}
-          md={4}
-          sm={4}
-          xs={12}
-          spacing={2}
-          style={{ paddingLeft: '20px' }}
-        >
-          <Grid item xl={4} lg={4} md={4} sm={4} xs={4}>
-            OR
-          </Grid>
-          <Grid item xl={8} lg={8} md={8} sm={8} xs={8}>
-            <Button
-              variant="contained"
-              color="primary"
-              // type="submit"
-              style={{ width: '80px' }}
-            >
-              Upload File
-            </Button>
-          </Grid>
-        </Grid>
-      </Grid>
-    </form>
-  )
+  const lineStatusTemplate = (rowData: any) => {
+    return (
+      <select value={rowData.lineStatus} onChange={handleTableStatusChange}>
+        {lineStatusOptions.map((status: any) => {
+          return (
+            <option value={status.value} key={status.value}>
+              {status.label}
+            </option>
+          )
+        })}
+      </select>
+    )
+  }
 
   const productListTable = (
     <Grid
@@ -1226,7 +1276,7 @@ function DelistsAddedToRange() {
               width: '90%',
             }}
           >
-            {!bulkActions && (
+            {/* {!bulkActions && (
               <InputLabel
                 id="demo-simple-select-outlined-label"
                 style={{
@@ -1236,7 +1286,8 @@ function DelistsAddedToRange() {
               >
                 BULK ACTIONS
               </InputLabel>
-            )}
+            )} */}
+            {/* <InputLabel>Bulk Actions</InputLabel> */}
 
             <Select
               label="Age"
@@ -1246,8 +1297,15 @@ function DelistsAddedToRange() {
                 color: 'white',
                 fontSize: '14px',
               }}
+              value={bulkActions}
+              displayEmpty
+              inputProps={{ 'aria-label': 'Without label' }}
               onChange={(e: any) => setBulkActions(e.target.value)}
+              placeholder="BULK ACTIONS"
             >
+              <MenuItem value="" disabled>
+                BULK ACTIONS
+              </MenuItem>
               {massActions.map((action: any) => {
                 return (
                   <MenuItem value={action.value} key={action.value}>
@@ -1272,14 +1330,13 @@ function DelistsAddedToRange() {
           // paginator
           // rows={10}
           // alwaysShowPaginator={false}
-          editMode="row"
+          // editMode="cell"
           selectionMode="checkbox"
           selection={selectedProductListItems}
           onSelectionChange={(e) => setSelectedProductListItems(e.value)}
-          emptyMessage="No Events found."
           showGridlines
           scrollable
-          lazy
+          rowHover
         >
           <Column
             selectionMode="multiple"
@@ -1302,28 +1359,35 @@ function DelistsAddedToRange() {
                     clearancePricingTemplate) ||
                   (col.field === 'clearDepotBy' && clearDepotByTemplate)
                 }
-                style={{
-                  width: col.width,
-                  fontSize: '0.8rem',
-                  padding: '8px',
-                }}
-                headerStyle={{
-                  color: 'white',
-                  backgroundColor: teal[900],
-                  width: col.width,
-                  fontSize: '0.9rem',
-                  padding: '8px',
-                }}
+                // style={{
+                //   width: col.width,
+                //   fontSize: '0.8rem',
+                //   padding: '8px',
+                // }}
+                // headerStyle={{
+                //   color: 'white',
+                //   backgroundColor: teal[900],
+                //   width: col.width,
+                //   fontSize: '0.9rem',
+                //   padding: '8px',
+                // }}
+                bodyStyle={tableBodyStyle(col.width)}
+                headerStyle={tableHeaderStyle(
+                  col.width,
+                  theme.palette.primary.main
+                )}
               />
             )
           })}
         </DataTable>
       </Grid>
-      <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-        <button className={classes.backButton}>
+      {/* <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+        <button
+        //  className={classes.backButton}
+        >
           <Typography variant="subtitle1">View More Columns</Typography>
         </button>
-      </Grid>
+      </Grid> */}
     </Grid>
   )
 
@@ -1334,8 +1398,268 @@ function DelistsAddedToRange() {
     setOpenPlaceholderDialog(false)
   }
 
+  const handlePlaceholderAdd = (count: any) => {
+    if (count != 0) {
+      console.log('adding ', count)
+      const newData: any = []
+      for (var i = 0; i < count; i++) {
+        var min = 1000000
+        var max = 9999999
+        var rand = Math.floor(min + Math.random() * (max - min))
+        newData.push({
+          actionType: 'Placeholder MIN',
+          min: rand,
+          comments: 'Add MIN to 275 store',
+          lineStatus: 'Draft',
+          man: 'NA',
+          ingredientMin: 'NA',
+          pin: 'NA    ',
+          description: 'McCain Microwave Quick Chips',
+          replaceMin: 'NA',
+          replaceMinDescription: 'NA',
+          existingSupplier: '',
+          existingSupplierSite: '',
+          numberOfRangeStores: '275',
+          storeCode: '',
+          ownBrand: '',
+          barcode: '',
+          casePack: '',
+          local: 'Y',
+          onlineCFC: 'Y',
+          onlineStorePick: 'Y',
+          wholesale: 'Y',
+        })
+      }
+
+      console.log(newData)
+      if (placeholderProducts && placeholderProducts.length > 0) {
+        setPlaceholderProducts((prevState: any) => {
+          return [...prevState, ...newData]
+        })
+      } else {
+        setPlaceholderProducts(newData)
+      }
+    }
+  }
+
+  const removePlaceholder = () => {
+    let _tasks = placeholderProducts.filter(
+      (value: any) => !selectedPlaceholderData.includes(value)
+    )
+    console.log(_tasks)
+    setPlaceholderProducts(_tasks)
+    setSelectedPlaceholderData(null)
+  }
+  const handlePlaceholderSave = () => {
+    handlePlaceholderDialogClose()
+    setPlaceholderCount('')
+    setPlaceholderProducts([])
+    if (importedData && importedData.length > 0) {
+      let newData = [...importedData, ...placeholderProducts]
+      console.log(newData)
+      setImportedData(newData)
+    } else {
+      setImportedData(placeholderProducts)
+    }
+  }
+
+  const handlePlaceholderUploadOpen = () => {
+    setOpenPlaceholderUpload(true)
+  }
+  const handlePlaceholderUploadClose = () => {
+    setOpenPlaceholderUpload(false)
+    setPlaceholderFile('')
+  }
+
+  const handlePlaceholderUpload = (event: any) => {
+    setPlaceholderFile(event.target.files[0])
+  }
+  const handlePlaceholderFileUpload = () => {
+    if (
+      placeholderFile &&
+      (placeholderFile.type === 'text/csv' ||
+        placeholderFile.type === 'application/vnd.ms-excel' ||
+        placeholderFile.type ===
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    ) {
+      console.log(placeholderFile)
+      import('xlsx').then((xlsx) => {
+        const reader = new FileReader()
+        reader.onload = (event: any) => {
+          const wb = xlsx.read(event.target.result, { type: 'array' })
+          const wsname = wb.SheetNames[0]
+          const ws = wb.Sheets[wsname]
+          const data = xlsx.utils.sheet_to_json(ws)
+          console.log(data)
+          const data1 = xlsx.utils.sheet_to_json(ws, { header: 1 })
+          const cols: any = data1[0]
+
+          let newData = data.map((d: any, index: any) => {
+            return {
+              actionType: 'Placeholder MIN',
+              min: `0${index}00${index}`,
+              comments: d[cols[12]] ? d[cols[12]] : '',
+              lineStatus: 'Draft',
+              man: 'NA',
+              ingredientMin: 'NA',
+              pin: 'NA    ',
+              description: d[cols[0]] ? d[cols[0]] : '',
+              replaceMin: 'NA',
+              replaceMinDescription: 'NA',
+              existingSupplier: d[cols[3]] ? d[cols[3]] : '',
+              existingSupplierSite: d[cols[4]] ? d[cols[4]] : '',
+              numberOfRangeStores: d[cols[6]] ? d[cols[6]] : '',
+              storeCode: d[cols[7]] ? d[cols[7]] : '',
+              ownBrand: d[cols[1]] ? d[cols[1]] : '',
+              barcode: d[cols[2]] ? d[cols[2]] : '',
+              casePack: d[cols[5]] ? d[cols[5]] : '',
+              local: d[cols[8]] ? d[cols[8]] : '',
+              onlineCFC: d[cols[9]] ? d[cols[9]] : '',
+              onlineStorePick: d[cols[10]] ? d[cols[10]] : '',
+              wholesale: d[cols[11]] ? d[cols[11]] : '',
+            }
+          })
+
+          console.log(newData)
+          if (placeholderProducts && placeholderProducts.length > 0) {
+            setPlaceholderProducts((prevState: any) => {
+              return [...prevState, ...newData]
+            })
+          } else {
+            setPlaceholderProducts([...newData])
+          }
+        }
+
+        reader.readAsArrayBuffer(placeholderFile)
+      })
+      handlePlaceholderUploadClose()
+    } else {
+      alert('Upload correct file')
+      setPlaceholderFile(null)
+    }
+  }
+
+  const uploadPlaceholderDialog = (
+    <Dialog
+      open={openPlaceholderUpload}
+      onClose={handlePlaceholderUploadClose}
+      fullWidth
+      classes={{
+        paperFullWidth: classes.placeholderDialog,
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          // width: small ? '400px' : '260px',
+          // height: "250px",
+          border: '3px solid green',
+          borderRadius: 5,
+        }}
+      >
+        <DialogHeader
+          title={`Upload Placeholder Products`}
+          onClose={handlePlaceholderUploadClose}
+        />
+
+        <Box sx={{ p: 1 }}>
+          <Typography variant="body2">Upload Placeholder Products</Typography>
+        </Box>
+
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box>
+            <input
+              type="text"
+              value={placeholderFile ? placeholderFile.name : ''}
+              onClick={() =>
+                document.getElementById('placeholderFile')!.click()
+              }
+              className={classes.uploadTextfield}
+              placeholder="No file selected"
+              readOnly
+            />
+            <Input
+              type="file"
+              id="placeholderFile"
+              accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              onChange={handlePlaceholderUpload}
+              required
+            />
+            <button
+              type="button"
+              onClick={() =>
+                document.getElementById('placeholderFile')!.click()
+              }
+              className={classes.uploadButton}
+            >
+              Browse...
+            </button>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            p: 2,
+            justifyContent: 'right',
+          }}
+        >
+          <Box>
+            <Typography color="primary">
+              Supported file type in MS Excel
+              <i className="pi pi-file-excel" style={{ fontSize: '18px' }}></i>
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            display: 'flex',
+            p: 3,
+            justifyContent: 'right',
+          }}
+        >
+          <Button
+            //   className={classes.submitButtons}
+            variant="contained"
+            color="primary"
+            onClick={handlePlaceholderFileUpload}
+          >
+            Select
+          </Button>
+        </Box>
+      </Box>
+    </Dialog>
+  )
+
+  const onEditorValueChange = (props: any, value: any) => {
+    let updatedProducts = [...props.value]
+    updatedProducts[props.rowIndex][props.field] = value
+    setPlaceholderProducts(updatedProducts)
+  }
+
+  const inputTextEditor = (props: any, field: any) => {
+    return (
+      <input
+        type="text"
+        value={props.rowData[field]}
+        onChange={(e: any) => onEditorValueChange(props, e.target.value)}
+      />
+    )
+  }
+
   const placeholderDialog = (
-    <Dialog open={openPlaceholderDialog} onClose={handlePlaceholderDialogClose}>
+    <Dialog
+      open={openPlaceholderDialog}
+      onClose={handlePlaceholderDialogClose}
+      fullWidth
+      classes={{
+        paperFullWidth:
+          placeholderProducts && placeholderProducts.length > 0
+            ? classes.placeholderDialogFull
+            : classes.placeholderDialog,
+      }}
+    >
       <Box
         sx={{
           display: 'flex',
@@ -1347,46 +1671,173 @@ function DelistsAddedToRange() {
           padding: '10px',
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            height: 30,
-            flexDirection: 'row',
-            borderRadius: 10,
+        <DialogHeader
+          title="Add placeholder Products"
+          onClose={handlePlaceholderDialogClose}
+        />
+        <Grid
+          item
+          container
+          xl={12}
+          lg={12}
+          md={12}
+          sm={12}
+          xs={12}
+          style={{
+            textAlign: 'center',
+            padding: '10px',
           }}
-          className={classes.dialogTitle}
+          spacing={2}
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexGrow: 1,
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="subtitle1">
-              Add placeholder Products
+          <Grid item md={7} sm={12} xs={12}>
+            <Typography variant="subtitle2" color="primary">
+              How many new lines do you wish to enter?
             </Typography>
-          </Box>
-          <Box
-            sx={{
-              paddingRight: 2,
-            }}
-          >
-            <button
-              style={{
-                border: 0,
-                padding: 0,
-                height: 22,
-                width: 22,
-              }}
-              className={classes.dialogCloseButton}
-              onClick={handlePlaceholderDialogClose}
+          </Grid>
+          <Grid item container md={7} sm={12} xs={12}>
+            {/* <Grid item container xs={12}> */}
+
+            <Grid item xs={12} sm={8}>
+              <Typography variant="subtitle2" color="primary">
+                <input
+                  type="text"
+                  required
+                  // className={classes.placeholderCountStyle}
+                  style={{
+                    width: small ? '88%' : '100%',
+                  }}
+                  value={placeholderCount}
+                  onChange={(e: any) => setPlaceholderCount(e.target.value)}
+                />
+              </Typography>
+            </Grid>
+            <Grid item sm={4} xs={12} style={{ textAlign: 'center' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ width: '80px' }}
+                onClick={() =>
+                  handlePlaceholderAdd(placeholderCount ? placeholderCount : 0)
+                }
+              >
+                ADD
+              </Button>
+            </Grid>
+            {/* </Grid> */}
+          </Grid>
+
+          <Grid item md={1} sm={12} xs={12}>
+            <Typography variant="subtitle2" color="primary">
+              OR
+            </Typography>
+          </Grid>
+          <Grid item md={3} sm={12} xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              // type="submit"
+              // style={{ width: '80px' }}
+              onClick={handlePlaceholderUploadOpen}
             >
-              <b>X</b>
-            </button>
-          </Box>
-        </Box>
-        {placeholderProducts}
+              Upload File
+            </Button>
+          </Grid>
+          {placeholderProducts && placeholderProducts.length > 0 && (
+            <Grid
+              item
+              container
+              xs={12}
+              style={{
+                paddingLeft: '10px',
+                paddingRight: '10px',
+                paddingTop: '20px',
+              }}
+            >
+              <Grid
+                item
+                xs={10}
+                style={{ textAlign: 'left', paddingBottom: '5px' }}
+              >
+                <Typography variant="body2" color="primary">
+                  Product List
+                </Typography>
+              </Grid>
+              <Grid item xs={2} style={{ paddingBottom: '5px' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handlePlaceholderAdd(1)}
+                >
+                  Add Row
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <DataTable
+                  // rowHover
+                  value={placeholderProducts}
+                  // selectionMode="checkbox"
+                  selection={selectedPlaceholderData}
+                  onSelectionChange={(e) => setSelectedPlaceholderData(e.value)}
+                  // globalFilter={globalFilter}
+                  className="p-datatable-sm"
+                  //   stateStorage="session"
+                  //   stateKey="dt-state-demo-session-eventmanage"
+                  showGridlines
+                  scrollable
+                  scrollHeight="300px"
+                  editMode="cell"
+                >
+                  <Column
+                    selectionMode="multiple"
+                    headerStyle={{
+                      width: '50px',
+                      color: 'white',
+
+                      backgroundColor: theme.palette.primary.main,
+                    }}
+                    // frozen
+                  ></Column>
+                  {placeholderCols.map((col: any) => {
+                    return (
+                      <Column
+                        header={col.header}
+                        field={col.field}
+                        key={col.field}
+                        bodyStyle={tableBodyStyle(col.width)}
+                        headerStyle={tableHeaderStyle(
+                          col.width,
+                          theme.palette.primary.main
+                        )}
+                        editor={(props: any) =>
+                          inputTextEditor(props, 'description')
+                        }
+                      />
+                    )
+                  })}
+                </DataTable>
+              </Grid>
+              <Grid item xs={8}></Grid>
+              <Grid item xs={2} style={{ paddingTop: '5px' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={removePlaceholder}
+                >
+                  Delete
+                </Button>
+              </Grid>
+              <Grid item xs={2} style={{ paddingTop: '5px' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handlePlaceholderSave}
+                >
+                  Save
+                </Button>
+              </Grid>
+            </Grid>
+          )}
+        </Grid>
       </Box>
     </Dialog>
   )
@@ -1413,13 +1864,17 @@ function DelistsAddedToRange() {
           </Grid>
 
           <Grid item xl={1} lg={1} md={1} sm={3} xs={5}>
-            <button className={classes.backButton}>
+            <button
+            // className={classes.backButton}
+            >
               <Typography variant="subtitle1">View Log</Typography>
             </button>
           </Grid>
 
           <Grid item xl={1} lg={1} md={1} sm={3} xs={3}>
-            <button className={classes.backButton}>
+            <button
+            // className={classes.backButton}
+            >
               <Typography variant="subtitle1">Back</Typography>
             </button>
           </Grid>
@@ -1470,38 +1925,24 @@ function DelistsAddedToRange() {
             alignItems: 'center',
           }}
         >
-          <Grid item container xl={4} lg={4} md={4} sm={12} xs={12} spacing={2}>
-            <Grid item xl={8} lg={8} md={8} sm={8} xs={8}>
-              {/* <select
-                style={{
-                  width: '100%',
-                  height: '35px',
-                }}
-                value={actionType}
-                onChange={(e: any) => setActionType(e.target.value)}
-                required
-              >
-            
-                <option value="Delist MIN">Delist MIN</option>
-                <option value="MIN Extension">MIN Extension</option>
-                <option value="MIN Restriction">MIN Restriction</option>
-                <option value="Space Extension">Space Extension</option>
-                <option value="Space Restriction">Space Restriction</option>
-                <option value="New MIN">New MIN</option>
-                <option value="New PIN">New PIN</option>
-                <option value="Delist PIN">Delist PIN</option>
-                <option value="Supplier Change">New Ingredient MIN</option>
-                <option value="Supplier Change">Delist Ingredient MIN</option>
-                <option value="Supplier Change">Supplier Change</option>
-              </select> */}
-
+          <Grid
+            item
+            container
+            md={6}
+            sm={12}
+            xs={12}
+            spacing={2}
+            style={{ textAlign: 'center' }}
+          >
+            <Grid item xs={10} sm={5}>
               <AutocompleteSelect
                 value={actionType}
                 options={actionTypes}
                 onChange={handleActionType}
+                placeholder="--- Action Type ---"
               />
             </Grid>
-            <Grid item xl={4} lg={4} md={4} sm={4} xs={4}>
+            <Grid item xs={2} sm={2}>
               <Button
                 variant="contained"
                 color="primary"
@@ -1510,28 +1951,52 @@ function DelistsAddedToRange() {
                 Add
               </Button>
             </Grid>
+            <Grid item xl={1} lg={1} md={1} sm={1} xs={12}>
+              OR
+            </Grid>
+            <Grid item sm={4} xs={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleUploadDialogOpen}
+              >
+                Upload File
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xl={1} lg={1} md={1} sm={1} xs={12}>
-            OR
-          </Grid>
-          <Grid item xl={2} lg={2} md={2} sm={2} xs={12}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleUploadDialogOpen}
-            >
-              Upload File
-            </Button>
-          </Grid>
-          <Grid item xl={3} lg={3} md={3} sm={3} xs={12}>
-            <button
-              className={classes.backButton}
-              onClick={handlePlaceholderDialogOpen}
-            >
-              <Typography variant="subtitle1">
-                Add placeholder products
-              </Typography>
-            </button>
+          <Grid
+            item
+            container
+            md={6}
+            sm={12}
+            xs={12}
+            spacing={2}
+            style={{ textAlign: 'center' }}
+          >
+            <Grid item sm={4} xs={12}>
+              <button
+                className="backButton"
+                onClick={handlePlaceholderDialogOpen}
+              >
+                <Typography variant="body2">Add Placeholder MIN/PIN</Typography>
+              </button>
+            </Grid>
+            <Grid item sm={4} xs={12}>
+              <button
+                className="backButton"
+                // onClick={handlePlaceholderDialogOpen}
+              >
+                <Typography variant="body2">Replacement Association</Typography>
+              </button>
+            </Grid>
+            <Grid item sm={4} xs={12}>
+              <button
+                className="backButton"
+                // onClick={handlePlaceholderDialogOpen}
+              >
+                <Typography variant="body2">Issue Delist Letter</Typography>
+              </button>
+            </Grid>
           </Grid>
         </Grid>
 
@@ -1617,6 +2082,7 @@ function DelistsAddedToRange() {
       {uploadDialog}
       {actionTypeDialog}
       {placeholderDialog}
+      {uploadPlaceholderDialog}
     </>
   )
 }

@@ -45,18 +45,18 @@ export const delistAddedToRangeCols = [
     width: '150px',
   },
   {
-    field: 'clearancePriceApplied',
+    field: 'clearancePriceCheck',
     header: 'Clearance Price required',
     width: '100px',
   },
   {
-    field: 'GSCOPDateCheckRequired',
-    header: 'GSCOP Date check Required',
+    field: 'orderStopDateCheck',
+    header: 'Order Stop Date check Required',
     width: '100px',
   },
   {
     field: 'stopOrder',
-    header: 'Stop Order',
+    header: 'Stop Order (Stock Rundown)',
     width: '100px',
   },
   {
@@ -98,6 +98,31 @@ export const delistAddedToRangeCols = [
     field: 'supplyChainSplst',
     header: 'Supply Chain Splst',
     width: '200px',
+  },
+]
+
+export const delistToRangeData = [
+  {
+    uniqueId: 325655,
+    eventName: 'Household & Pet Food',
+    dueDate: '05-Nov-22',
+    status: 'Not started',
+    resetType: 'Full Range Reset',
+    targetDate: '3-Jan-22',
+    group: 'Frozen',
+    category: 'Frozen Food',
+    department: '3-Jan-22',
+    clearancePriceCheck: 'Y',
+    orderStopDateCheck: 'Y',
+    stopOrder: 'Y',
+    buyer: 'helen.barker@morrisonsplc.co.uk',
+    buyingAssistant: 'paul.allman@morrisonsplc.co.uk',
+    ownBrandManager: 'naomi.anderson@morrisonsplc.co.uk',
+    seniorBuyingManager: 'sophie.olding@morrisonsplc.co.uk',
+    merchandiser: 'helen.barker@morrisonsplc.co.uk',
+    rangeResetManager: 'naomi.anderson@morrisonsplc.co.uk',
+    categoryDirector: 'sophie.olding@morrisonsplc.co.uk',
+    supplyChainSplst: 'Cristine Black',
   },
 ]
 
@@ -189,13 +214,38 @@ export const salesChannels = [
 
 export const productListCols = [
   {
-    field: 'action/type',
+    field: 'actionType',
     header: 'Action/ Type',
     width: '100px',
   },
   {
-    field: 'min/pin',
-    header: 'MIN/ PIN',
+    field: 'lineStatus',
+    header: 'Line Status',
+    width: '200px',
+  },
+  {
+    field: 'man',
+    header: 'MAN',
+    width: '100px',
+  },
+  {
+    field: 'min',
+    header: 'MIN',
+    width: '100px',
+  },
+  {
+    field: 'ingredientMin',
+    header: 'Ingredient MIN',
+    width: '100px',
+  },
+  // {
+  //   field: 'noOfUniqueIngredientMin',
+  //   header: 'No. of Unique Ingredient MIN',
+  //   width: '100px',
+  // },
+  {
+    field: 'pin',
+    header: 'PIN',
     width: '100px',
   },
   {
@@ -204,38 +254,33 @@ export const productListCols = [
     width: '200px',
   },
   {
-    field: 'replaceMin/pin',
+    field: 'replaceMin',
     header: 'Replace MIN/ PIN',
     width: '100px',
   },
-  // {
-  //   field: "description1",
-  //   header: "Description",
-  //   width: "200px",
-  // },
   {
-    field: 'fromDate',
-    header: 'Effective Date (From)',
+    field: 'replaceMinDescription',
+    header: 'Description (Replacing MIN)',
+    width: '200px',
+  },
+  {
+    field: 'existingSupplier',
+    header: 'Existing Supplier',
     width: '150px',
   },
   {
-    field: 'toDate',
-    header: 'Effective Date (To)',
+    field: 'existingSupplierSite',
+    header: 'Existing Supplier Site',
     width: '150px',
   },
   {
-    field: 'lineStatus',
-    header: 'Line Status',
+    field: 'numberOfRangeStores',
+    header: 'Number Of Range Stores',
     width: '150px',
   },
   {
-    field: 'clearancePricing',
-    header: 'Clearance Pricing',
-    width: '150px',
-  },
-  {
-    field: 'clearDepotBy',
-    header: 'Clear Depot By',
+    field: 'storeCode',
+    header: 'storeCode',
     width: '150px',
   },
 ]
@@ -308,5 +353,86 @@ export const massActions = [
   {
     value: 'INCLUDE IN',
     label: 'INCLUDE IN',
+  },
+]
+
+export const placeholderCols = [
+  {
+    field: 'min',
+    header: 'MIN',
+    width: '100px',
+  },
+  {
+    field: 'description',
+    header: 'Description',
+    width: '200px',
+  },
+  {
+    field: 'ownBrand',
+    header: 'Own Brand',
+    width: '100px',
+  },
+  {
+    field: 'barcode',
+    header: 'Barcode',
+    width: '100px',
+  },
+  {
+    field: 'existingSupplier',
+    header: 'Supplier Code',
+    width: '150px',
+  },
+  {
+    field: 'existingSupplierSite',
+    header: 'Supplier Site Code',
+    width: '150px',
+  },
+  {
+    field: 'casePack',
+    header: 'Case Pack',
+    width: '100px',
+  },
+  {
+    field: 'numberOfRangeStores',
+    header: 'New No.of Range Stores',
+    width: '150px',
+  },
+  {
+    field: 'local',
+    header: 'Local',
+    width: '100px',
+  },
+
+  {
+    field: 'onlineCFC',
+    header: 'Online (CFC)',
+    width: '100px',
+  },
+
+  {
+    field: 'onlineStorePick',
+    header: 'Online Store Pick',
+    width: '150px',
+  },
+  {
+    field: 'wholesale',
+    header: 'Wholesale',
+    width: '150px',
+  },
+  {
+    field: 'comments',
+    header: 'Comments',
+    width: '150px',
+  },
+]
+
+export const lineStatusOptions = [
+  {
+    value: 'Request For Stock Count',
+    label: 'Request For Stock Count',
+  },
+  {
+    value: 'Draft',
+    label: 'Draft',
   },
 ]

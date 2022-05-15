@@ -200,6 +200,11 @@ function ManageTaskEvent(props: any) {
   const [failureCount, setFailureCount] = React.useState(0)
   const [cancelOpenDelete, setCancelOpenDelete] = useState(false)
   const [cancelOpenCross, setCancelOpenCross] = useState(false)
+  const [disabled, setDisabled] = useState(false)
+
+  useEffect(() => {
+    console.log(selectedEvents)
+  }, [selectedEvents])
 
   useEffect(() => {
     setIsProgressLoader(true)
@@ -728,11 +733,29 @@ function ManageTaskEvent(props: any) {
         })
   }, [])
 
+  useEffect(() => {
+    if (selectedEvents) {
+      for (let i = 0; i < selectedEvents.length; i++) {
+        if (
+          selectedEvents &&
+          selectedEvents[i].status.toLowerCase() !== 'draft'
+        ) {
+          setDisabled(true)
+          break
+        } else {
+          setDisabled(false)
+        }
+      }
+    }
+  }, [selectedEvents])
+
   const goBack = () => {
+    setSelectedEvents([])
     history.goBack()
   }
 
   const handleCreateEvent = () => {
+    setSelectedEvents([])
     history.push(`${DEFAULT}${RANGEAMEND_CREATE}`)
   }
 
@@ -1008,11 +1031,13 @@ function ManageTaskEvent(props: any) {
       // let singleRow = [data]
       // setFile(singleRow)
       history.push(`${DEFAULT}${RANGEAMEND_MANAGE_TASK}`)
+      setSelectedEvents([])
     } else if (data.status && data.status.toLowerCase() === 'duplicate') {
       alert('Duplicate Event')
     } else {
       // setErrorFile(data)
       history.push(`${DEFAULT}${RANGEAMEND_CREATE}`)
+      setSelectedEvents([])
     }
   }
 
@@ -3870,6 +3895,7 @@ function ManageTaskEvent(props: any) {
                     onClick={() => {
                       selectedImportedData.length > 0 && handlePublish()
                     }}
+                    disabled={disabled}
                   >
                     Publish
                   </Button>

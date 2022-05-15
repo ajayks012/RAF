@@ -22,18 +22,18 @@ import {
 } from '@material-ui/core'
 
 const cols = [
+  // {
+  //   field: 'uniqueId',
+  //   header: 'uniqueId',
+  //   width: '100px',
+  // },
+  // {
+  //   field: 'uniqueId1',
+  //   header: 'uniqueId1',
+  //   width: '100px',
+  // },
   {
-    field: 'uniqueId',
-    header: 'uniqueId',
-    width: '100px',
-  },
-  {
-    field: 'uniqueId1',
-    header: 'uniqueId1',
-    width: '100px',
-  },
-  {
-    field: 'eventName',
+    field: 'name',
     header: 'eventName',
     width: '100px',
   },
@@ -81,9 +81,9 @@ const cols = [
 
 const rows = [
   {
-    uniqueId: '356555',
-    uniqueId1: '356555',
-    eventName: 'Household & Pet Food',
+    // uniqueId: '356555',
+    // uniqueId1: '356555',
+    name: 'Household & Pet Food',
     task: 'Scoping Meeting',
     dueDate: '05-Nov-22',
     status: 'Not started ',
@@ -195,20 +195,31 @@ function RcmMyPendingTaks() {
     history.push('/commercial/eventdashboard')
   }
 
-  const handleUniqueIdClick = (data: any) => {
+  // const handleUniqueIdClick = (data: any) => {
+  //   history.push({
+  //     pathname: '/commercial-webapp/delistsaddedtorange',
+  //     search: `?task=${data['uniqueId']}`, // query string
+  //     state: {
+  //       // location state
+  //       data: data,
+  //     },
+  //   })
+  // }
+  // const handleUniqueId1Click = (data: any) => {
+  //   history.push({
+  //     pathname: '/commercial/rangechange/productbrief',
+  //     search: `?task=${data['uniqueId']}`, // query string
+  //     state: {
+  //       // location state
+  //       data: data,
+  //     },
+  //   })
+  // }
+
+  const handleNameClick = (data: any) => {
     history.push({
       pathname: '/commercial-webapp/delistsaddedtorange',
-      search: `?task=${data['uniqueId']}`, // query string
-      state: {
-        // location state
-        data: data,
-      },
-    })
-  }
-  const handleUniqueId1Click = (data: any) => {
-    history.push({
-      pathname: '/commercial/rangechange/productbrief',
-      search: `?task=${data['uniqueId']}`, // query string
+      search: `?task=${data['name']}`, // query string
       state: {
         // location state
         data: data,
@@ -216,32 +227,47 @@ function RcmMyPendingTaks() {
     })
   }
 
-  const uniqueIdTemplate = (rowData: any) => {
+  // const uniqueIdTemplate = (rowData: any) => {
+  //   return (
+  //     <div
+  //       style={{
+  //         cursor: 'pointer',
+  //         color: 'blue',
+  //       }}
+  //       onClick={() => handleUniqueIdClick(rowData)}
+  //     >
+  //       {rowData.uniqueId}
+  //     </div>
+  //   )
+  // }
+
+  const eventNameTemplate = (rowData: any) => {
     return (
       <div
         style={{
           cursor: 'pointer',
           color: 'blue',
         }}
-        onClick={() => handleUniqueIdClick(rowData)}
+        onClick={() => handleNameClick(rowData)}
       >
-        {rowData.uniqueId}
+        {rowData.name}
       </div>
     )
   }
-  const uniqueId1Template = (rowData: any) => {
-    return (
-      <div
-        style={{
-          cursor: 'pointer',
-          color: 'blue',
-        }}
-        onClick={() => handleUniqueId1Click(rowData)}
-      >
-        {rowData.uniqueId}
-      </div>
-    )
-  }
+
+  // const uniqueId1Template = (rowData: any) => {
+  //   return (
+  //     <div
+  //       style={{
+  //         cursor: 'pointer',
+  //         color: 'blue',
+  //       }}
+  //       onClick={() => handleUniqueId1Click(rowData)}
+  //     >
+  //       {rowData.uniqueId}
+  //     </div>
+  //   )
+  // }
 
   const table = (
     <DataTable
@@ -271,10 +297,7 @@ function RcmMyPendingTaks() {
             key={index}
             field={col.field}
             header={col.header}
-            body={
-              (col.field === 'uniqueId' && uniqueIdTemplate) ||
-              (col.field === 'uniqueId1' && uniqueId1Template)
-            }
+            body={col.field === 'name' && eventNameTemplate}
             style={{
               width: col.width,
               fontSize: '0.8rem',
