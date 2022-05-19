@@ -1,9 +1,9 @@
 export const delistAddedToRangeCols = [
-  {
-    field: 'uniqueId',
-    header: 'Unique ID',
-    width: '100px',
-  },
+  // {
+  //   field: 'uniqueId',
+  //   header: 'Unique ID',
+  //   width: '100px',
+  // },
   {
     field: 'eventName',
     header: 'Event Name',
@@ -42,6 +42,11 @@ export const delistAddedToRangeCols = [
   {
     field: 'department',
     header: 'Department',
+    width: '150px',
+  },
+  {
+    field: 'eventId',
+    header: 'Event ID',
     width: '150px',
   },
   {
@@ -103,7 +108,6 @@ export const delistAddedToRangeCols = [
 
 export const delistToRangeData = [
   {
-    uniqueId: 325655,
     eventName: 'Household & Pet Food',
     dueDate: '05-Nov-22',
     status: 'Not started',
@@ -111,7 +115,8 @@ export const delistToRangeData = [
     targetDate: '3-Jan-22',
     group: 'Frozen',
     category: 'Frozen Food',
-    department: '3-Jan-22',
+    department: 'Frozen Fish',
+    eventId: '10001',
     clearancePriceCheck: 'Y',
     orderStopDateCheck: 'Y',
     stopOrder: 'Y',

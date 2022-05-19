@@ -135,6 +135,7 @@ function DelistsAddedToRange() {
   const radio = <Radio color="primary" />
 
   const [productType, setProductType] = useState<any>('existingProducts')
+  const [eventDetails, setEventDetails] = useState<any>(delistToRangeData)
   const [actionType, setActionType] = useState<any>()
   const [min, setMin] = useState<any>('')
   const [existingSearchFields, setExistingSearchFields] = useState<any>()
@@ -297,6 +298,14 @@ function DelistsAddedToRange() {
     }
   }
 
+  const handleBulkActions = (e: any) => {
+    if (e) {
+      setBulkActions(e)
+    } else {
+      setBulkActions('')
+    }
+  }
+
   const handleUploadDialogOpen = () => {
     actionType && setOpenUploadDialog(true)
   }
@@ -406,7 +415,7 @@ function DelistsAddedToRange() {
         />
 
         <Box sx={{ p: 1 }}>
-          <Typography variant="body2">
+          <Typography variant="body2" color="primary">
             Upload {actionType && actionType.value}
           </Typography>
         </Box>
@@ -834,10 +843,15 @@ function DelistsAddedToRange() {
                   </Box>
                   <Box>
                     <Typography variant="subtitle2" color="primary">
-                      <input
+                      {/* <input
                         type="text"
                         value={min}
                         onChange={(e: any) => setMin(e.target.value)}
+                      /> */}
+                      <OutlinedInput
+                        value={min}
+                        onChange={(e: any) => setMin(e.target.value)}
+                        className={classes.inputFields}
                       />
                     </Typography>
                   </Box>
@@ -857,10 +871,15 @@ function DelistsAddedToRange() {
                   </Box>
                   <Box>
                     <Typography variant="subtitle2" color="primary">
-                      <input
+                      {/* <input
                         type="text"
                         value={comments}
                         onChange={(e: any) => setComments(e.target.value)}
+                      /> */}
+                      <OutlinedInput
+                        value={comments}
+                        onChange={(e: any) => setComments(e.target.value)}
+                        className={classes.inputFields}
                       />
                     </Typography>
                   </Box>
@@ -878,10 +897,15 @@ function DelistsAddedToRange() {
                   </Box>
                   <Box>
                     <Typography variant="subtitle2" color="primary">
-                      <input
+                      {/* <input
                         type="text"
                         value={min}
                         onChange={(e: any) => setMin(e.target.value)}
+                      /> */}
+                      <OutlinedInput
+                        value={min}
+                        onChange={(e: any) => setMin(e.target.value)}
+                        className={classes.inputFields}
                       />
                     </Typography>
                   </Box>
@@ -894,10 +918,15 @@ function DelistsAddedToRange() {
                   </Box>
                   <Box>
                     <Typography variant="subtitle2" color="primary">
-                      <input
+                      {/* <input
                         type="text"
                         value={noOfStores}
                         onChange={(e: any) => setNoOfStores(e.target.value)}
+                      /> */}
+                      <OutlinedInput
+                        value={noOfStores}
+                        onChange={(e: any) => setNoOfStores(e.target.value)}
+                        className={classes.inputFields}
                       />
                     </Typography>
                   </Box>
@@ -910,14 +939,33 @@ function DelistsAddedToRange() {
                   </Box>
                   <Box>
                     <Typography variant="subtitle2" color="primary">
-                      <select
+                      {/* <select
                         placeholder="--Select--"
                         value={storeCode}
                         onChange={(e: any) => setStoreCode(e.target.value)}
                         style={{ width: '160px' }}
                       >
                         <option value="001">Store-001</option>
-                      </select>
+                      </select> */}
+
+                      <Select
+                        value={storeCode}
+                        onChange={(e) => setStoreCode(e.target.value)}
+                        input={
+                          <OutlinedInput
+                            margin="dense"
+                            className={classes.inputFields}
+                          />
+                        }
+                      >
+                        <MenuItem
+                          value={'001'}
+                          // key={type.id}
+                          className={classes.muiSelect}
+                        >
+                          Store-001
+                        </MenuItem>
+                      </Select>
                     </Typography>
                   </Box>
                 </Box>
@@ -929,10 +977,15 @@ function DelistsAddedToRange() {
                   </Box>
                   <Box>
                     <Typography variant="subtitle2" color="primary">
-                      <input
+                      {/* <input
                         type="text"
                         value={comments}
                         onChange={(e: any) => setComments(e.target.value)}
+                      /> */}
+                      <OutlinedInput
+                        value={comments}
+                        onChange={(e: any) => setComments(e.target.value)}
+                        className={classes.inputFields}
                       />
                     </Typography>
                   </Box>
@@ -1233,15 +1286,27 @@ function DelistsAddedToRange() {
   //     </Grid>
   //   )
 
-  const handleTableStatusChange = (e: any) => {
-    let data: any = [...importedData]
-    data.lineStatus = e.target.value
-    setImportedData(data)
+  const handleTableStatusChange = (rowData: any, e: any) => {
+    let newData: any = []
+    importedData.map((d: any) => {
+      if (d.min === rowData.min) {
+        let selectValue = d
+        selectValue.lineStatus = e.target.value
+        newData.push(selectValue)
+      } else {
+        newData.push(d)
+      }
+    })
+    console.log(newData)
+    setImportedData(newData)
   }
 
   const lineStatusTemplate = (rowData: any) => {
     return (
-      <select value={rowData.lineStatus} onChange={handleTableStatusChange}>
+      <select
+        value={rowData.lineStatus}
+        onChange={(e: any) => handleTableStatusChange(rowData, e)}
+      >
         {lineStatusOptions.map((status: any) => {
           return (
             <option value={status.value} key={status.value}>
@@ -1266,17 +1331,19 @@ function DelistsAddedToRange() {
       spacing={2}
     >
       <Grid item xl={7} lg={7} md={7} sm={5} xs={12}>
-        <Typography variant="subtitle1">Product List</Typography>
+        <Typography variant="subtitle1" color="primary">
+          Product List
+        </Typography>
       </Grid>
-      <Grid item container xl={5} lg={5} md={5} sm={5} xs={12}>
+      <Grid item container xl={5} lg={5} md={5} sm={5} xs={12} spacing={2}>
         <Grid item xl={8} lg={8} md={8} sm={8} xs={7}>
-          <FormControl
+          {/* <FormControl
             variant="outlined"
             style={{
               width: '90%',
             }}
-          >
-            {/* {!bulkActions && (
+          > */}
+          {/* {!bulkActions && (
               <InputLabel
                 id="demo-simple-select-outlined-label"
                 style={{
@@ -1287,25 +1354,23 @@ function DelistsAddedToRange() {
                 BULK ACTIONS
               </InputLabel>
             )} */}
-            {/* <InputLabel>Bulk Actions</InputLabel> */}
+          {/* <InputLabel>Bulk Actions</InputLabel>
 
             <Select
-              label="Age"
-              style={{
-                backgroundColor: teal[900],
-                height: '40px',
-                color: 'white',
-                fontSize: '14px',
-              }}
               value={bulkActions}
-              displayEmpty
-              inputProps={{ 'aria-label': 'Without label' }}
+              // displayEmpty
+              // inputProps={{ 'aria-label': 'Without label' }}
               onChange={(e: any) => setBulkActions(e.target.value)}
-              placeholder="BULK ACTIONS"
+              className={classes.bulkActionSelect}
+              // input={
+              //   <OutlinedInput
+              //     margin="dense"
+              //     className={classes.bulkActionSelect}
+              //     placeholder="BULK ACTIONS"
+              //   />
+              // }
             >
-              <MenuItem value="" disabled>
-                BULK ACTIONS
-              </MenuItem>
+              
               {massActions.map((action: any) => {
                 return (
                   <MenuItem value={action.value} key={action.value}>
@@ -1314,7 +1379,15 @@ function DelistsAddedToRange() {
                 )
               })}
             </Select>
-          </FormControl>
+          </FormControl> */}
+          <Typography color="primary">
+            <AutocompleteSelect
+              value={bulkActions}
+              options={massActions}
+              onChange={handleBulkActions}
+              placeholder="Bulk Actions"
+            />
+          </Typography>
         </Grid>
         <Grid item xl={4} lg={4} md={4} sm={4} xs={5}>
           <Button variant="contained" color="primary">
@@ -1564,7 +1637,9 @@ function DelistsAddedToRange() {
         />
 
         <Box sx={{ p: 1 }}>
-          <Typography variant="body2">Upload Placeholder Products</Typography>
+          <Typography variant="body2" color="primary">
+            Upload Placeholder Products
+          </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -1856,32 +1931,46 @@ function DelistsAddedToRange() {
           spacing={2}
           style={{ paddingBottom: '20px' }}
         >
-          <Grid item xl={10} lg={10} md={10} sm={12} xs={12}>
-            <Typography variant="h6">
+          <Grid item xl={9} lg={9} md={9} sm={12} xs={12}>
+            <Typography variant="h6" color="primary">
               Pending Action -{' '}
               <b>Delists added to the Range Change Management App</b>
             </Typography>
           </Grid>
 
-          <Grid item xl={1} lg={1} md={1} sm={3} xs={5}>
+          <Grid item xl={2} lg={2} md={2} sm={3} xs={5}>
             <button
-            // className={classes.backButton}
+              // className={classes.backButton}
+              className="backButton"
             >
-              <Typography variant="subtitle1">View Log</Typography>
+              {/* <Typography variant="subtitle1" color="primary"> */}
+              View Log
+              {/* </Typography> */}
             </button>
           </Grid>
 
           <Grid item xl={1} lg={1} md={1} sm={3} xs={3}>
             <button
-            // className={classes.backButton}
+              // className={classes.backButton}
+              className="backButton"
             >
-              <Typography variant="subtitle1">Back</Typography>
+              {/* <Typography variant="subtitle1" color="primary"> */}
+              <svg
+                className="MuiSvgIcon-root"
+                focusable="false"
+                viewBox="0 0 34 34"
+                aria-hidden="true"
+              >
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
+              </svg>
+              Back
+              {/* </Typography> */}
             </button>
           </Grid>
         </Grid>
         <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
           <DataTable
-            value={delistToRangeData}
+            value={eventDetails}
             scrollable
             showGridlines
             style={{
@@ -1934,13 +2023,15 @@ function DelistsAddedToRange() {
             spacing={2}
             style={{ textAlign: 'center' }}
           >
-            <Grid item xs={10} sm={5}>
-              <AutocompleteSelect
-                value={actionType}
-                options={actionTypes}
-                onChange={handleActionType}
-                placeholder="--- Action Type ---"
-              />
+            <Grid item xs={10} sm={5} style={{ textAlign: 'left' }}>
+              <Typography color="primary">
+                <AutocompleteSelect
+                  value={actionType}
+                  options={actionTypes}
+                  onChange={handleActionType}
+                  placeholder="--- Action Type ---"
+                />
+              </Typography>
             </Grid>
             <Grid item xs={2} sm={2}>
               <Button
@@ -1978,7 +2069,9 @@ function DelistsAddedToRange() {
                 className="backButton"
                 onClick={handlePlaceholderDialogOpen}
               >
-                <Typography variant="body2">Add Placeholder MIN/PIN</Typography>
+                <Typography variant="body2" color="primary">
+                  Add Placeholder MIN/PIN
+                </Typography>
               </button>
             </Grid>
             <Grid item sm={4} xs={12}>
@@ -1986,7 +2079,9 @@ function DelistsAddedToRange() {
                 className="backButton"
                 // onClick={handlePlaceholderDialogOpen}
               >
-                <Typography variant="body2">Replacement Association</Typography>
+                <Typography variant="body2" color="primary">
+                  Replacement Association
+                </Typography>
               </button>
             </Grid>
             <Grid item sm={4} xs={12}>
@@ -1994,7 +2089,9 @@ function DelistsAddedToRange() {
                 className="backButton"
                 // onClick={handlePlaceholderDialogOpen}
               >
-                <Typography variant="body2">Issue Delist Letter</Typography>
+                <Typography variant="body2" color="primary">
+                  Issue Delist Letter
+                </Typography>
               </button>
             </Grid>
           </Grid>

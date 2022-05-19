@@ -113,6 +113,23 @@ export const useStyles = makeStyles((theme) => {
     muiSelect: {
       fontSize: '12px',
     },
+    inputFields: {
+      // [theme.breakpoints.up('sm')]: {
+      //   width: '80%',
+      // },
+      // [theme.breakpoints.down('sm')]: {
+      //   width: '80%',
+      // },
+      width: '200px',
+      padding: '8px',
+      height: 38,
+    },
+    bulkActionSelect: {
+      backgroundColor: theme.palette.primary.main,
+      height: '40px',
+      color: 'white',
+      fontSize: '14px',
+    },
   }
 })
 
