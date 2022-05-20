@@ -20,152 +20,8 @@ import {
   InputAdornment,
   IconButton,
 } from '@material-ui/core'
-
-const cols = [
-  // {
-  //   field: 'uniqueId',
-  //   header: 'uniqueId',
-  //   width: '100px',
-  // },
-  // {
-  //   field: 'uniqueId1',
-  //   header: 'uniqueId1',
-  //   width: '100px',
-  // },
-  {
-    field: 'name',
-    header: 'eventName',
-    width: '100px',
-  },
-  {
-    field: 'task',
-    header: 'task',
-    width: '100px',
-  },
-  {
-    field: 'dueDate',
-    header: 'dueDate',
-    width: '100px',
-  },
-  {
-    field: 'status',
-    header: 'status',
-    width: '100px',
-  },
-  {
-    field: 'resetType',
-    header: 'resetType',
-    width: '100px',
-  },
-  {
-    field: 'launchDate',
-    header: 'launchDate',
-    width: '100px',
-  },
-  {
-    field: 'group',
-    header: 'group',
-    width: '100px',
-  },
-  {
-    field: 'category',
-    header: 'category',
-    width: '100px',
-  },
-  {
-    field: 'department',
-    header: 'department',
-    width: '100px',
-  },
-]
-
-const rows = [
-  {
-    // uniqueId: '356555',
-    // uniqueId1: '356555',
-    name: 'Household & Pet Food',
-    task: 'Scoping Meeting',
-    dueDate: '05-Nov-22',
-    status: 'Not started ',
-    resetType: 'Full Range Reset',
-    launchDate: '3-Jan-22',
-    group: 'Frozen',
-    category: 'Frozen Food',
-    department: 'Household & Pet Food',
-  },
-]
-
-const useStyles = makeStyles((theme: any) => {
-  return {
-    backButton: {
-      border: 0,
-      color: 'blue',
-      backgroundColor: 'white',
-      cursor: 'pointer',
-      fontSize: '18px',
-    },
-    buttons: {
-      height: 40,
-      [theme.breakpoints.up('sm')]: {
-        '&:hover': {
-          fontSize: '0.97rem',
-        },
-        width: '200px',
-      },
-      [theme.breakpoints.down('sm')]: {
-        fontSize: '0.6rem',
-        // height: 50,
-        padding: '1px',
-      },
-      width: '100%',
-    },
-    dialogButton: {
-      height: 40,
-      [theme.breakpoints.up('sm')]: {
-        '&:hover': {
-          fontSize: '0.97rem',
-        },
-        width: '80px',
-      },
-      [theme.breakpoints.down('sm')]: {
-        fontSize: '0.6rem',
-        // height: 50,
-        padding: '1px',
-      },
-      width: '100%',
-    },
-    buttonContainer: {
-      [theme.breakpoints.up('lg')]: {
-        textAlign: 'right',
-      },
-      [theme.breakpoints.down('lg')]: {
-        textAlign: 'center',
-      },
-    },
-    dialogTitle: {
-      backgroundColor: theme.palette.primary.main,
-      color: 'white',
-      alignItems: 'baseline',
-    },
-    dialogCloseButton: {
-      color: '#ff5252',
-      backgroundColor: theme.palette.primary.main,
-      fontSize: '18px',
-      '&:hover': {
-        color: '#d50000',
-        backgroundColor: '#00e676',
-        cursor: 'pointer',
-        borderRadius: 10,
-      },
-    },
-    comments: {
-      width: '100%',
-    },
-    dialogTextfield: {
-      width: '100%',
-    },
-  }
-})
+import { cols, rows } from './DataConstants'
+import { tableBodyStyle, tableHeaderStyle, useStyles } from './styles'
 
 function RcmMyPendingTaks() {
   const classes = useStyles()
@@ -298,18 +154,11 @@ function RcmMyPendingTaks() {
             field={col.field}
             header={col.header}
             body={col.field === 'name' && eventNameTemplate}
-            style={{
-              width: col.width,
-              fontSize: '0.8rem',
-              padding: '8px',
-            }}
-            headerStyle={{
-              color: 'white',
-              backgroundColor: teal[900],
-              width: col.width,
-              fontSize: '0.9rem',
-              padding: '8px',
-            }}
+            bodyStyle={tableBodyStyle(col.width)}
+            headerStyle={tableHeaderStyle(
+              col.width,
+              theme.palette.primary.main
+            )}
           />
         )
       })}
@@ -370,7 +219,9 @@ function RcmMyPendingTaks() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <div>
-                <Typography variant="body2">Search User Name</Typography>
+                <Typography variant="body2" color="primary">
+                  Search User Name
+                </Typography>
               </div>
               <TextField
                 value={searchFilter}
@@ -390,7 +241,9 @@ function RcmMyPendingTaks() {
             </Grid>
             <Grid item xs={12}>
               <div>
-                <Typography variant="body2">Select Reason</Typography>
+                <Typography variant="body2" color="primary">
+                  Select Reason
+                </Typography>
               </div>
               <select defaultValue="" className={classes.dialogTextfield}>
                 <option value="" disabled>
@@ -401,7 +254,9 @@ function RcmMyPendingTaks() {
             </Grid>
             <Grid item xs={12}>
               <div>
-                <Typography variant="body2">Comments</Typography>
+                <Typography variant="body2" color="primary">
+                  Comments
+                </Typography>
               </div>
               <textarea rows={5} className={classes.comments} />
             </Grid>
@@ -446,7 +301,9 @@ function RcmMyPendingTaks() {
           }}
         >
           <Grid item xl={3} lg={3} md={3} sm={12} xs={12}>
-            <Typography variant="h5">Pending Tasks</Typography>
+            <Typography variant="h5" color="primary">
+              Pending Tasks
+            </Typography>
           </Grid>
 
           <Grid item xl={8} lg={8} md={8} sm={8} xs={8}>
@@ -475,7 +332,19 @@ function RcmMyPendingTaks() {
               textAlign: 'right',
             }}
           >
-            <button className={classes.backButton} onClick={goBack}>
+            <button
+              //  className={classes.backButton}
+              className="backButton"
+              onClick={goBack}
+            >
+              <svg
+                className="MuiSvgIcon-root"
+                focusable="false"
+                viewBox="0 0 34 34"
+                aria-hidden="true"
+              >
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
+              </svg>
               Back
             </button>
           </Grid>

@@ -26,7 +26,7 @@ import ManualEvent from '../RangeChangeManagement/pages/ManualEvent/ManualEvent'
 import ManageEventTasks from '../RangeChangeManagement/pages/ManageEventTasks/ManageEventTasks'
 import PendingActionsScopeMeeting from '../RAF/sections/PendingActions/PendingActionsScopeMeeting'
 import RcmMyPendingTaks from '../RAF/sections/PendingTasks/RcmMyPendingTaks'
-import TaskDashboard from '../RangeChangeManagement/sections/Dashboard/TaskDashboard'
+import TaskDashboard from '../RAF/sections/Dashboard/TaskDashboard'
 import DelistsAddedToRange from '../RAF/sections/DelistsAddedToRange/DelistsAddedToRange'
 
 const useStyles = makeStyles((theme) => ({

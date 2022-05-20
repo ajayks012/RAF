@@ -2029,7 +2029,7 @@ function DelistsAddedToRange() {
                   value={actionType}
                   options={actionTypes}
                   onChange={handleActionType}
-                  placeholder="--- Action Type ---"
+                  placeholder="Action Type"
                 />
               </Typography>
             </Grid>
