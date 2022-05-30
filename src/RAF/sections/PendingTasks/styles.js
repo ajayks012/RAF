@@ -70,6 +70,33 @@ export const useStyles = makeStyles((theme) => {
     dialogTextfield: {
       width: '100%',
     },
+    placeholderDialog: {
+      [theme.breakpoints.up('xs')]: {
+        'max-width': '45%',
+      },
+      [theme.breakpoints.down('xs')]: {
+        'max-width': '75%',
+      },
+      'max-width': '85%',
+    },
+    uploadTextfield: {
+      [theme.breakpoints.up(670)]: {
+        width: 250,
+      },
+      [theme.breakpoints.down(670)]: {
+        width: 100,
+      },
+
+      height: '32px',
+      cursor: 'pointer',
+    },
+    uploadButton: {
+      width: 100,
+      height: '32px',
+      cursor: 'pointer',
+      backgroundColor: theme.palette.primary.main,
+      color: 'white',
+    },
   }
 })
 
