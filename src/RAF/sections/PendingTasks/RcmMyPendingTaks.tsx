@@ -19,15 +19,9 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  styled,
 } from '@material-ui/core'
 import { cols, rows } from './DataConstants'
 import { tableBodyStyle, tableHeaderStyle, useStyles } from './styles'
-import DialogHeader from '../../components/DialogHeader/DialogHeader'
-
-const Input = styled('input')({
-  display: 'none',
-})
 
 function RcmMyPendingTaks() {
   const classes = useStyles()
@@ -172,111 +166,119 @@ function RcmMyPendingTaks() {
   )
 
   const assignToOtherDialog = (
-    <Dialog
-      open={openAssignToOther}
-      onClose={handleAssignToOtherClose}
-      fullWidth
-      classes={{
-        paperFullWidth: classes.placeholderDialog,
-      }}
-    >
+    <Dialog open={openAssignToOther} onClose={handleAssignToOtherClose}>
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          // width: small ? "600px" : "260px",
+          width: small ? '400px' : '230px',
           // height: "250px",
           border: '3px solid green',
           borderRadius: 5,
           padding: '10px',
         }}
       >
-        <DialogHeader
-          title="Add placeholder Products"
-          onClose={handleAssignToOtherClose}
-        />
-        {/* <Box sx={{ p: 3 }}> */}
-        <Grid container spacing={2} style={{ padding: '10px' }}>
-          <Grid item xs={12}>
-            <div>
-              <Typography variant="body2" color="primary">
-                Search User Name
-              </Typography>
-            </div>
-            <TextField
-              value={searchFilter}
-              className={classes.dialogTextfield}
-              onChange={(e: any) => setSearchFilter(e.target.value)}
-              placeholder="Search User Details"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton>
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <div>
-              <Typography variant="body2" color="primary">
-                Select Reason
-              </Typography>
-            </div>
-            <div>
-              <input
-                type="text"
-                // value={uploadedFile ? uploadedFile.name : ''}
-                onClick={() => document.getElementById('selectedFile')!.click()}
-                className={classes.uploadTextfield}
-                placeholder="No file selected"
-                readOnly
-              />
-              <Input
-                type="file"
-                id="selectedFile"
-                accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                // onChange={handleFileUpload}
-                required
-              />
-              <button
-                type="button"
-                onClick={() => document.getElementById('selectedFile')!.click()}
-                className={classes.uploadButton}
-              >
-                Browse...
-              </button>
-            </div>
-          </Grid>
-          <Grid item xs={12}>
-            <div>
-              <Typography variant="body2" color="primary">
-                Comments
-              </Typography>
-            </div>
-            <textarea rows={5} className={classes.comments} />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            style={{
-              textAlign: 'right',
+        <Box
+          sx={{
+            display: 'flex',
+            height: 30,
+            flexDirection: 'row',
+            borderRadius: 10,
+          }}
+          className={classes.dialogTitle}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexGrow: 1,
+              justifyContent: 'center',
             }}
           >
-            <Button
-              // type="submit"
-              variant="contained"
-              color="primary"
-              className={classes.dialogButton}
-              onClick={handleAssignToOther}
+            <Typography variant="subtitle1">Assign To Other</Typography>
+          </Box>
+          <Box
+            sx={{
+              paddingRight: 2,
+            }}
+          >
+            <button
+              style={{
+                border: 0,
+                padding: 0,
+                height: 22,
+                width: 22,
+              }}
+              className={classes.dialogCloseButton}
+              onClick={handleAssignToOtherClose}
             >
-              Assign
-            </Button>
+              <b>X</b>
+            </button>
+          </Box>
+        </Box>
+        <Box sx={{ p: 3 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <div>
+                <Typography variant="body2" color="primary">
+                  Search User Name
+                </Typography>
+              </div>
+              <TextField
+                value={searchFilter}
+                className={classes.dialogTextfield}
+                onChange={(e: any) => setSearchFilter(e.target.value)}
+                placeholder="Search User Details"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton>
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <div>
+                <Typography variant="body2" color="primary">
+                  Select Reason
+                </Typography>
+              </div>
+              <select defaultValue="" className={classes.dialogTextfield}>
+                <option value="" disabled>
+                  --- Select Reason ---
+                </option>
+                <option value="select">Select</option>
+              </select>
+            </Grid>
+            <Grid item xs={12}>
+              <div>
+                <Typography variant="body2" color="primary">
+                  Comments
+                </Typography>
+              </div>
+              <textarea rows={5} className={classes.comments} />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              style={{
+                textAlign: 'right',
+              }}
+            >
+              <Button
+                // type="submit"
+                variant="contained"
+                color="primary"
+                className={classes.dialogButton}
+                onClick={handleAssignToOther}
+              >
+                Assign
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-        {/* </Box> */}
+        </Box>
       </Box>
     </Dialog>
   )

@@ -1,12 +1,12 @@
-import axios from 'axios'
-import config from '../config/Config'
+import axios from "axios";
+import config from "../config/Config";
 //import depotTable from "../serviceJson/depoTable.json";
 import {
   serviceRequest,
   serviceRequestBasic,
   serviceRequestForProduct,
   serviceRequestForFileUpload,
-} from './ServiceRequest'
+} from "./ServiceRequest";
 const {
   BASE_URL,
   BASE_URL_SIT,
@@ -42,22 +42,29 @@ const {
   GET_EVENTDETAILS_BY_ID,
   PATCH_DELETE_RANGERESETS,
   PUBLISH_CAMUNDA_EVENT,
-} = config
+  GET_CONFIG,
+  PRODUCT_SERVICE_GET,
+  GET_RANGE_BY_RANGEID,
+  GET_PRODUCT_SERVICE,
+  GET_PRODUCT_SUPPLIER_SERVICE,
+  GET_SUPPLIER_SERVICE,
+  GET_PRODUCT_COMPOSITION_SERVICE,
+} = config;
 
 export const userV2Login = (idToken) => {
-  const data = new URLSearchParams()
-  data.append('grant_type', 'password')
-  data.append('id_token', idToken)
+  const data = new URLSearchParams();
+  data.append("grant_type", "password");
+  data.append("id_token", idToken);
   return axios({
-    method: 'POST',
+    method: "POST",
     url: `${BASE_URL_SIT}${USER_V2}?apikey=${API_KEY}`,
     headers: {
-      'content-type': 'application/x-www-form-urlencoded',
-      'Cache-Control': 'no-cache',
+      "content-type": "application/x-www-form-urlencoded",
+      "Cache-Control": "no-cache",
     },
     data,
-  })
-}
+  });
+};
 
 // export const fetchProducts = (ids) => {
 //   const url = `${PRODUCT_SEARCH_URL}`;
@@ -79,16 +86,16 @@ export const userV2Login = (idToken) => {
 // };
 
 export const postTaskLogsAPI = (req) => {
-  const url = `${BASE_URL}${POST_TASKLOG_ID}`
-  let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'POST', reqBody)
-}
+  const url = `${BASE_URL}${POST_TASKLOG_ID}`;
+  let reqBody = `${JSON.stringify(req)}`;
+  return serviceRequest(url, "POST", reqBody);
+};
 
 export const postFileAttachmentAPI = (req, userId) => {
-  let url = `${BASE_URL}${POST_ATTACHMENT}`
-  url = url.replace('{userId}', userId)
-  return serviceRequestForFileUpload(url, 'POST', req)
-}
+  let url = `${BASE_URL}${POST_ATTACHMENT}`;
+  url = url.replace("{userId}", userId);
+  return serviceRequestForFileUpload(url, "POST", req);
+};
 // export const getRangeResetAPI = (rangeResetId) => {
 //   let url = `${RANGE_BASE_URL}${GET_RANGE_RESET}`;
 //   url = url.replace("{rangeResetId}", rangeResetId);
@@ -117,18 +124,18 @@ export const postFileAttachmentAPI = (req, userId) => {
 // };
 
 export const putUserDetailsAPI = (req) => {
-  let url = `${BASE_URL}${PUT_USER_DETAILS_ID}`
-  url = url.replace('{userId}', req.user.employeeId)
-  let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'PUT', reqBody)
-}
+  let url = `${BASE_URL}${PUT_USER_DETAILS_ID}`;
+  url = url.replace("{userId}", req.user.employeeId);
+  let reqBody = `${JSON.stringify(req)}`;
+  return serviceRequest(url, "PUT", reqBody);
+};
 
 export const putUserDetailsCamundaAPI = (req) => {
-  let url = `${BASE_URL}${PUT_USER_DETAILS_ID_CAMUNDA}`
-  url = url.replace('{userId}', req.user.employeeId)
-  let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'PUT', reqBody)
-}
+  let url = `${BASE_URL}${PUT_USER_DETAILS_ID_CAMUNDA}`;
+  url = url.replace("{userId}", req.user.employeeId);
+  let reqBody = `${JSON.stringify(req)}`;
+  return serviceRequest(url, "PUT", reqBody);
+};
 
 // export const fetchMyRangeResets = () => {
 //   const url = `${RANGE_BASE_URL}${GET_RANGE_RESETS}`;
@@ -182,232 +189,272 @@ export const putUserDetailsCamundaAPI = (req) => {
 // };
 
 export const getUserDetailsAPI = (userId) => {
-  const url = `${BASE_URL_SIT}${GET_USER_INFO}`
-  return serviceRequest(url, 'GET', undefined)
-}
+  const url = `${BASE_URL_SIT}${GET_USER_INFO}`;
+  return serviceRequest(url, "GET", undefined);
+};
 
 export const colleagueV2Login = (accesToken) => {
   return axios({
-    method: 'GET',
+    method: "GET",
     url: `${BASE_URL}${GET_USER_INFO}?apikey=${API_KEY}`,
     headers: {
-      'content-type': 'application/json',
+      "content-type": "application/json",
       Authorization: `Bearer ${accesToken}`,
     },
-  })
-}
+  });
+};
 
 export const getRoleAPI = () => {
-  const url = `${BASE_URL}${GET_ROLES_ALL}`
-  const params = 'limit=1000'
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  const url = `${BASE_URL}${GET_ROLES_ALL}`;
+  const params = "limit=1000";
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getStatusCamundaAPI = () => {
-  let empId = ''
+  let empId = "";
   const userV2Response = JSON.parse(
-    localStorage && localStorage.getItem('_GresponseV2')
-  )
+    localStorage && localStorage.getItem("_GresponseV2")
+  );
   if (userV2Response) {
-    empId = userV2Response && userV2Response.empId
+    empId = userV2Response && userV2Response.empId;
   }
-  let url = `${BASE_URL}${GET_DASHBOARD_STATUS_CAMUNDA}`
-  const params = 'limit=1000'
-  url = url.replace('{userId}', empId)
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  let url = `${BASE_URL}${GET_DASHBOARD_STATUS_CAMUNDA}`;
+  const params = "limit=1000";
+  url = url.replace("{userId}", empId);
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getAppsAPI = () => {
-  const url = `${BASE_URL}${GET_APP_MENU_ALL}`
-  const params = 'limit=1000'
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  const url = `${BASE_URL}${GET_APP_MENU_ALL}`;
+  const params = "limit=1000";
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getUserAPI = (userId) => {
-  let url = `${BASE_URL}${GET_USER_DETAILS_ID}`
-  url = url.replace('{userId}', userId)
-  const params = 'limit=1000&statusIn=A,I,D'
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  let url = `${BASE_URL}${GET_USER_DETAILS_ID}`;
+  url = url.replace("{userId}", userId);
+  const params = "limit=1000&statusIn=A,I,D";
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getUserIdAPI = (userId) => {
-  let url = `${BASE_URL}${GET_USER_DETAILS_ID}`
-  url = url.replace('{userId}', userId)
-  const params = 'limit=1000&statusIn=I,D'
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  let url = `${BASE_URL}${GET_USER_DETAILS_ID}`;
+  url = url.replace("{userId}", userId);
+  const params = "limit=1000&statusIn=I,D";
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getUserForAllStatusAPI = (userId) => {
-  let url = `${BASE_URL}${GET_USER_DETAILS_ID}`
-  url = url.replace('{userId}', userId)
-  const params = 'limit=1000'
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  let url = `${BASE_URL}${GET_USER_DETAILS_ID}`;
+  url = url.replace("{userId}", userId);
+  const params = "limit=1000";
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getUserGroupAPI = () => {
-  const url = `${BASE_URL}${GET_USER_GROUPS_ALL}`
-  const params = 'limit=1000'
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  const url = `${BASE_URL}${GET_USER_GROUPS_ALL}`;
+  const params = "limit=1000";
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getUserGroupActiveAPI = () => {
-  const url = `${BASE_URL}${GET_USER_GROUPS_ALL}`
-  const params = 'limit=1000&statusIn=A'
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  const url = `${BASE_URL}${GET_USER_GROUPS_ALL}`;
+  const params = "limit=1000&statusIn=A";
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const putUserGroupAPI = (req, groupId) => {
-  let url = `${BASE_URL}${PUT_USER_GROUPS_ID}`
-  url = url.replace('{groupId}', groupId)
-  let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'PUT', reqBody)
-}
+  let url = `${BASE_URL}${PUT_USER_GROUPS_ID}`;
+  url = url.replace("{groupId}", groupId);
+  let reqBody = `${JSON.stringify(req)}`;
+  return serviceRequest(url, "PUT", reqBody);
+};
 
 export const putClaimTaskAPI = (req, taskId) => {
-  let url = `${BASE_URL}${PUT_CLAIM_TASK_CAMUNDA}`
-  url = url.replace('{taskId}', taskId)
-  let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'PUT', reqBody)
-}
+  let url = `${BASE_URL}${PUT_CLAIM_TASK_CAMUNDA}`;
+  url = url.replace("{taskId}", taskId);
+  let reqBody = `${JSON.stringify(req)}`;
+  return serviceRequest(url, "PUT", reqBody);
+};
 
 export const putCompleteTaskAPI = (req, taskId) => {
-  let url = `${BASE_URL}${PUT_COMPLETE_TASK_CAMUNDA}`
-  url = url.replace('{taskId}', taskId)
-  let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'PUT', reqBody)
-}
+  let url = `${BASE_URL}${PUT_COMPLETE_TASK_CAMUNDA}`;
+  url = url.replace("{taskId}", taskId);
+  let reqBody = `${JSON.stringify(req)}`;
+  return serviceRequest(url, "PUT", reqBody);
+};
 
 export const putRejectTaskAPI = (req, businessKey) => {
-  let url = `${BASE_URL}${PUT_REJECT_TASK_CAMUNDA}`
-  url = url.replace('{businessKey}', businessKey)
-  let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'PUT', reqBody)
-}
+  let url = `${BASE_URL}${PUT_REJECT_TASK_CAMUNDA}`;
+  url = url.replace("{businessKey}", businessKey);
+  let reqBody = `${JSON.stringify(req)}`;
+  return serviceRequest(url, "PUT", reqBody);
+};
 
 export const getProductHierarchyAPI = (url) => {
-  return serviceRequestForProduct(url, 'GET', undefined)
-}
+  return serviceRequestForProduct(url, "GET", undefined);
+};
 
 export const getProductHierarchyListAPI = (nodetype) => {
-  let url = `${BASE_URL}${PRODUCT_HIERARCHY_LIST_GET}`
-  url = url.replace('{nodetype}', nodetype)
-  return serviceRequest(url, 'GET', undefined)
-}
+  let url = `${BASE_URL}${PRODUCT_HIERARCHY_LIST_GET}`;
+  url = url.replace("{nodetype}", nodetype);
+  return serviceRequest(url, "GET", undefined);
+};
 
 export const getAllUsersAPI = () => {
-  const url = `${BASE_URL}${GET_USER_DETAILS_ALL}`
-  const params = 'limit=1000'
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  const url = `${BASE_URL}${GET_USER_DETAILS_ALL}`;
+  const params = "limit=1000";
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getUsersAPIByEmailAndRole = (roleId, emailId) => {
-  const url = `${BASE_URL}${GET_USER_DETAILS_ALL}`
-  const params = `roleIdIn=${roleId}&statusIn=A,I,D&emailIdIn=${emailId}`
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  const url = `${BASE_URL}${GET_USER_DETAILS_ALL}`;
+  const params = `roleIdIn=${roleId}&statusIn=A,I,D&emailIdIn=${emailId}`;
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getUsersAPIByRole = (roleId) => {
-  const url = `${BASE_URL}${GET_USER_DETAILS_ALL}`
-  const params = `roleIdIn=${roleId}&statusIn=A,I,D`
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  const url = `${BASE_URL}${GET_USER_DETAILS_ALL}`;
+  const params = `roleIdIn=${roleId}&statusIn=A,I,D`;
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getAllUsersWithGroupAPI = (groupId) => {
-  const url = `${BASE_URL}${GET_USER_DETAILS_ALL}`
-  const params = `limit=1000&groupIdIn=${groupId}`
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  const url = `${BASE_URL}${GET_USER_DETAILS_ALL}`;
+  const params = `limit=1000&groupIdIn=${groupId}`;
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getColleagueAPI = (id) => {
-  let url = `${BASE_URL_SIT}${GET_USER_INFO_OTHER}`
-  url = url.replace('{userId}', id)
-  return serviceRequestBasic(url, 'GET', undefined)
-}
+  let url = `${BASE_URL_SIT}${GET_USER_INFO_OTHER}`;
+  url = url.replace("{userId}", id);
+  return serviceRequestBasic(url, "GET", undefined);
+};
 
 export const getTasklistsAllAPI = (userId) => {
-  let url = `${BASE_URL}${GET_TASKLIST_ALL}`
-  const params = `limit=1000&referenceNumberIn=${userId}&stateIn=Pending,New`
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  let url = `${BASE_URL}${GET_TASKLIST_ALL}`;
+  const params = `limit=1000&referenceNumberIn=${userId}&stateIn=Pending,New`;
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const getTasklistsAPI = (requestId) => {
-  let url = `${BASE_URL}${GET_TASKLIST_ID}`
-  url = url.replace('{requestId}', requestId)
-  return serviceRequestBasic(url, 'GET', undefined)
-}
+  let url = `${BASE_URL}${GET_TASKLIST_ID}`;
+  url = url.replace("{requestId}", requestId);
+  return serviceRequestBasic(url, "GET", undefined);
+};
 
 export const getTasklogsAPI = (requestId) => {
-  let url = `${BASE_URL}${GET_TASKLOG_ID}`
-  url = url.replace('{requestId}', requestId)
-  return serviceRequestBasic(url, 'GET', undefined)
-}
+  let url = `${BASE_URL}${GET_TASKLOG_ID}`;
+  url = url.replace("{requestId}", requestId);
+  return serviceRequestBasic(url, "GET", undefined);
+};
 
 export const getResetTypes = () => {
-  let url = `${BASE_URL}${GET_RESET_TYPES}`
+  let url = `${BASE_URL}${GET_RESET_TYPES}`;
   // const params = `createdByIdIn=${createdBy}`
-  return serviceRequest(url, 'GET', undefined)
-}
+  return serviceRequest(url, "GET", undefined);
+};
 
 export const getPlanogramClasses = () => {
-  let url = `${BASE_URL}${GET_PLANOGRAM_CLASSES}`
+  let url = `${BASE_URL}${GET_PLANOGRAM_CLASSES}`;
   // const params = `createdByIdIn=${createdBy}`
-  return serviceRequest(url, 'GET', undefined)
-}
+  return serviceRequest(url, "GET", undefined);
+};
 
 export const getWastageRanges = () => {
-  let url = `${BASE_URL}${GET_WASTAGE_RANGES}`
+  let url = `${BASE_URL}${GET_WASTAGE_RANGES}`;
   // const params = `createdByIdIn=${createdBy}`
-  return serviceRequest(url, 'GET', undefined)
-}
+  return serviceRequest(url, "GET", undefined);
+};
 
 export const getRangeResetEvents = (createdBy) => {
-  let url = `${BASE_URL}${GET_RANGERESET_EVENTS}`
-  const params = `createdByIdIn=${createdBy}`
-  return serviceRequest(url, 'GET', undefined, params)
-}
+  let url = `${BASE_URL}${GET_RANGERESET_EVENTS}`;
+  const params = `createdByIdIn=${createdBy}`;
+  return serviceRequest(url, "GET", undefined, params);
+};
 
 export const patchRangeResetEvents = (req) => {
-  let url = `${BASE_URL}${PATCH_RANGERESET_EVENTS}`
+  let url = `${BASE_URL}${PATCH_RANGERESET_EVENTS}`;
   // url = url.replace('{userId}', req.user.employeeId)
-  let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'PATCH', reqBody)
-}
+  let reqBody = `${JSON.stringify(req)}`;
+  return serviceRequest(url, "PATCH", reqBody);
+};
 
 export const deleteRangeResets = (resetId) => {
-  let url = `${BASE_URL}${DELETE_RANGERESETS}`
-  url = url.replace('{rangeResetId}', resetId)
-  return serviceRequest(url, 'DELETE', undefined)
-}
+  let url = `${BASE_URL}${DELETE_RANGERESETS}`;
+  url = url.replace("{rangeResetId}", resetId);
+  return serviceRequest(url, "DELETE", undefined);
+};
 
 export const patchUpdateRangeResets = (resetId, req) => {
-  let url = `${BASE_URL}${PATCH_DELETE_RANGERESETS}`
-  url = url.replace('{rangeResetId}', resetId)
-  let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'PATCH', reqBody)
-}
+  let url = `${BASE_URL}${PATCH_DELETE_RANGERESETS}`;
+  url = url.replace("{rangeResetId}", resetId);
+  let reqBody = `${JSON.stringify(req)}`;
+  return serviceRequest(url, "PATCH", reqBody);
+};
 
 export const createEventsCamunda = (eventId, req) => {
-  let url = `${BASE_URL}${CREATE_EVENTS_CAMUNDA}`
-  url = url.replace('{eventId}', eventId)
-  let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'PUT', reqBody)
-}
+  let url = `${BASE_URL}${CREATE_EVENTS_CAMUNDA}`;
+  url = url.replace("{eventId}", eventId);
+  let reqBody = `${JSON.stringify(req)}`;
+  return serviceRequest(url, "PUT", reqBody);
+};
 
 export const publishEventsCamunda = (eventId, req) => {
-  let url = `${BASE_URL}${PUBLISH_CAMUNDA_EVENT}`
-  url = url.replace('{eventId}', eventId)
-  let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'PUT', reqBody)
-}
+  let url = `${BASE_URL}${PUBLISH_CAMUNDA_EVENT}`;
+  url = url.replace("{eventId}", eventId);
+  let reqBody = `${JSON.stringify(req)}`;
+  return serviceRequest(url, "PUT", reqBody);
+};
 
 export const getEventDetailsById = (eventId) => {
-  let url = `${BASE_URL}${GET_EVENTDETAILS_BY_ID}`
-  url = url.replace('{eventId}', eventId)
+  let url = `${BASE_URL}${GET_EVENTDETAILS_BY_ID}`;
+  url = url.replace("{eventId}", eventId);
   // let reqBody = `${JSON.stringify(req)}`
-  return serviceRequest(url, 'GET', undefined)
-}
+  return serviceRequest(url, "GET", undefined);
+};
+export const getConfigType = (configType) => {
+  let url = `${BASE_URL}${GET_CONFIG}`;
+  url = url.replace("{configType}", configType);
+  // let reqBody = `${JSON.stringify(req)}`
+  return serviceRequest(url, "GET", undefined);
+};
+export const getRangeByRangeResetId = (rangeResetId) => {
+  let url = `${BASE_URL}${GET_RANGE_BY_RANGEID}`;
+  url = url.replace("{rangeResetId}", rangeResetId);
+  // let reqBody = `${JSON.stringify(req)}`
+  return serviceRequest(url, "GET", undefined);
+};
 
-// export const getItemWeekStoreViewForecastAPI = (
+export const getProductServiceByItemnumber = (itemNumber) => {
+  let url = `${BASE_URL}${GET_PRODUCT_SERVICE}`;
+  url = url.replace("{itemNumber}", itemNumber);
+  // let reqBody = `${JSON.stringify(req)}`
+  return serviceRequest(url, "GET", undefined);
+};
+export const getProductSupplierServiceByItemnumber = (itemNumber) => {
+  let url = `${BASE_URL}${GET_PRODUCT_SUPPLIER_SERVICE}`;
+  url = url.replace("{itemNumber}", itemNumber);
+  // let reqBody = `${JSON.stringify(req)}`
+  // return serviceRequest(url, "GET", undefined);
+  return serviceRequestBasic(url, "GET", undefined);
+};
+export const getSupplierServiceBySupplierId = (supplierId) => {
+  let url = `${BASE_URL}${GET_SUPPLIER_SERVICE}`;
+  url = url.replace("{supplierId}", supplierId);
+  // let reqBody = `${JSON.stringify(req)}`
+  // return serviceRequest(url, "GET", undefined);
+  return serviceRequest(url, "GET", undefined);
+};
+
+export const getProductCompositionServiceByItemnumber = (itemNumber) => {
+  let url = `${BASE_URL}${GET_PRODUCT_COMPOSITION_SERVICE}`;
+  url = url.replace("{itemNumber}", itemNumber);
+  // let reqBody = `${JSON.stringify(req)}`
+  // return serviceRequest(url, "GET", undefined);
+  return serviceRequest(url, "GET", undefined);
+};
+// export const getItemWeekStoreViewForecastAPI = ( GET_PRODUCT_SUPPLIER_SERVICE
 //   rangeResetId,
 //   productMinCode,
 //   productEndDate

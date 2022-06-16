@@ -5,7 +5,7 @@ import Select from 'react-select'
 import { components } from 'react-select'
 
 const AutocompleteSelect = React.forwardRef((props: any, ref: any) => {
-  const { value, options, isMulti, onChange } = props
+  const { value, options, isMulti, onChange, renderInput } = props
   const theme = useTheme()
 
   const Option = (props: any) => {
