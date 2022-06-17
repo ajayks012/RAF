@@ -221,7 +221,11 @@ function DelistsAddedToRange() {
         console.log(res.data.items)
         if (res.data.items.length > 0) {
           const data = res.data.items.map((item: any) => {
+            var minVal = 1000000000000
+            var max = 9999999999999
+            var rand = Math.floor(minVal + Math.random() * (max - minVal))
             return {
+              _idCheck: rand,
               actionType: item.type,
               itemNumber: item.itemNumber,
               description: item.description,
@@ -286,7 +290,7 @@ function DelistsAddedToRange() {
   const localTemplate = (rowData: any) => {
     return (
       <select
-        value={rowData.local}
+        value={rowData && rowData.local}
         onChange={(e: any) => {
           setExistingSearchFields((prevState: any) => {
             return [
@@ -317,7 +321,7 @@ function DelistsAddedToRange() {
   // }
 
   const clearancePricingTemplate = (rowData: any) => {
-    if (rowData['min/pin']) {
+    if (rowData && rowData['min/pin']) {
       if (rowData.clearancePricing === 'NA') {
         return (
           <select defaultValue={rowData.clearancePricing} disabled>
@@ -336,7 +340,7 @@ function DelistsAddedToRange() {
   }
 
   const clearDepotByTemplate = (rowData: any) => {
-    if (rowData['min/pin']) {
+    if (rowData && rowData['min']) {
       if (rowData.clearDepotBy === 'NA') {
         return (
           <select defaultValue={rowData.clearDepotBy} disabled>
@@ -355,14 +359,14 @@ function DelistsAddedToRange() {
   }
 
   const existingSupplierProductListTemplate = (rowData: any) => {
-    return <span>{rowData.existingSupplier}</span>
+    return <span>{rowData && rowData.existingSupplier}</span>
   }
 
   const ingredientMinTemplate = (rowData: any) => {
-    console.log('ingredientMinTemplate', rowData)
+    // console.log('ingredientMinTemplate', rowData)
     if (
-      rowData.actionType === 'Delist MIN' ||
-      rowData.actionType === 'Derange'
+      rowData &&
+      (rowData.actionType === 'Delist MIN' || rowData.actionType === 'Derange')
     ) {
       return (
         <a href="#" style={{ color: '#0074cc' }}>
@@ -370,7 +374,7 @@ function DelistsAddedToRange() {
         </a>
       )
     } else {
-      return <span>{rowData.ingredientMin}</span>
+      return <span>{rowData && rowData.ingredientMin}</span>
     }
   }
 
@@ -734,8 +738,13 @@ function DelistsAddedToRange() {
     newnoofrangestoreNewMin: any,
     storecodeNewMin: any
   ) => {
+    var minVal = 1000000000000
+    var max = 9999999999999
+    var rand = Math.floor(minVal + Math.random() * (max - minVal))
+    console.log('render id check', rand)
     const formData: any = {
-      min: min !== '' ? min : minValue,
+      _idCheck: rand,
+      min: min ? min : minValue,
       pin: '',
       packquantity: '',
       description: '',
@@ -812,8 +821,9 @@ function DelistsAddedToRange() {
     storecodeNewMin: any
   ) => {
     setIsProgressLoader(true)
+
     const formData: any = {
-      min: min !== '' ? min : minValue,
+      min: min ? min : minValue,
       pin: '',
       packquantity: '',
       description: '',
@@ -898,6 +908,7 @@ function DelistsAddedToRange() {
     if (actionType.value === 'Delist Product (MIN)') {
       if (min !== '') {
         console.log('hello')
+
         getAndCheckItemNumber(min, 'Delist MIN', '', '', 'NA', 'NA')
         // const formData = {
         //   actionType: actionType.value,
@@ -1577,7 +1588,11 @@ function DelistsAddedToRange() {
   const submitNewProduct = (e: any) => {
     e.preventDefault()
     if (newProductId) {
+      var minVal = 1000000000000
+      var max = 9999999999999
+      var rand = Math.floor(minVal + Math.random() * (max - minVal))
       let newProductData: any = {
+        _idCheck: rand,
         productId: newProductId,
         description: '',
         'department/Category': 'Household & Pet Food/Pet Foods',
@@ -1755,7 +1770,7 @@ function DelistsAddedToRange() {
   const handleTableStatusChange = (rowData: any, e: any) => {
     let newData: any = []
     importedData.map((d: any) => {
-      if (d.min === rowData.min) {
+      if (d._idCheck === rowData._idCheck) {
         let selectValue = d
         selectValue.lineStatus = e.target.value
         newData.push(selectValue)
@@ -1784,7 +1799,7 @@ function DelistsAddedToRange() {
     // )
     return (
       <Select
-        value={rowData.lineStatus}
+        value={rowData && (rowData.lineStatus ? rowData.lineStatus : null)}
         onChange={(e: any) => handleTableStatusChange(rowData, e)}
         input={<OutlinedInput margin="dense" className={classes.muiSelect} />}
       >
@@ -1798,6 +1813,14 @@ function DelistsAddedToRange() {
       </Select>
     )
   }
+
+  useEffect(() => {
+    console.log('selected product list', selectedProductListItems)
+  }, [selectedProductListItems])
+
+  useEffect(() => {
+    console.log('replacement list', replacementAssociationProduct)
+  }, [replacementAssociationProduct])
 
   const productListTable = (
     <Grid
@@ -1975,9 +1998,9 @@ function DelistsAddedToRange() {
       console.log('adding ', count)
       const newData: any = []
       for (var i = 0; i < count; i++) {
-        var min = 1000000000000
+        var minVal = 1000000000000
         var max = 9999999999999
-        var rand = Math.floor(min + Math.random() * (max - min))
+        var rand = Math.floor(minVal + Math.random() * (max - minVal))
 
         newData.push({
           _idCheck: rand,
@@ -2020,15 +2043,15 @@ function DelistsAddedToRange() {
       console.log('adding ', count)
       const newData: any = []
       for (var i = 0; i < count; i++) {
-        var min = 1000000000000
+        var minVal = 1000000000000
         var max = 9999999999999
-        var rand = Math.floor(min + Math.random() * (max - min))
-
+        var rand = Math.floor(minVal + Math.random() * (max - minVal))
         newData.push({
+          _idCheck: rand,
           delist_min_pin: '111913101',
           replace_min_pin: '148759650',
-          effectivedatefrom: '12/02/2022',
-          effectivedateto: '12/02/2022',
+          effectiveDateFrom: null,
+          effectiveDateTo: null,
           comments: 'Hello',
         })
       }
@@ -2189,9 +2212,9 @@ function DelistsAddedToRange() {
           const cols: any = data1[0]
 
           let newData = data.map((d: any, index: any) => {
-            var min = 1000000000000
+            var minVal = 1000000000000
             var max = 9999999999999
-            var rand = Math.floor(min + Math.random() * (max - min))
+            var rand = Math.floor(minVal + Math.random() * (max - minVal))
             return {
               _idCheck: rand,
               actionType: 'Placeholder MIN',
@@ -2370,7 +2393,7 @@ function DelistsAddedToRange() {
     console.log('ownBrandPlaceholderTemplate', rowData)
     return (
       <Select
-        value={rowData.ownBrand}
+        value={rowData && rowData.ownBrand}
         // onChange={(e) => eventHandleDetailsSOT(e)}
         onChange={(e: any) => {
           setPlaceholderProducts((prevState: any) => {
@@ -2410,7 +2433,7 @@ function DelistsAddedToRange() {
       <OutlinedInput
         margin="dense"
         className={classes.muiSelect}
-        value={rowData.barcode}
+        value={rowData && rowData.barcode}
         onChange={(e) => {
           if (e.target.value !== null) {
             setPlaceholderProducts((prevState: any) => {
@@ -2432,7 +2455,7 @@ function DelistsAddedToRange() {
       <OutlinedInput
         margin="dense"
         className={classes.muiSelect}
-        value={rowData.description}
+        value={rowData && rowData.description}
         onChange={(e) => {
           if (e.target.value !== null) {
             setPlaceholderProducts((prevState: any) => {
@@ -2518,7 +2541,7 @@ function DelistsAddedToRange() {
   const supplierSiteCodePlaceholderTemplate = (rowData: any) => {
     return (
       <SearchSelect
-        value={rowData.existingSupplierSite}
+        value={rowData && rowData.existingSupplierSite}
         // onChange={handleBuyer}
         className={classes.muiSelect}
         onChange={(e: any) => {
@@ -2547,7 +2570,7 @@ function DelistsAddedToRange() {
       <OutlinedInput
         margin="dense"
         className={classes.muiSelect}
-        value={rowData.packquantity}
+        value={rowData && rowData.packquantity}
         onChange={(e) => {
           if (e.target.value !== null) {
             setPlaceholderProducts((prevState: any) => {
@@ -2568,7 +2591,7 @@ function DelistsAddedToRange() {
       <OutlinedInput
         margin="dense"
         className={classes.muiSelect}
-        value={rowData.numberOfRangeStores}
+        value={rowData && rowData.numberOfRangeStores}
         onChange={(e) => {
           if (e.target.value !== null) {
             setPlaceholderProducts((prevState: any) => {
@@ -2588,7 +2611,7 @@ function DelistsAddedToRange() {
   const localPlaceholderTemplate = (rowData: any) => {
     return (
       <Select
-        value={rowData.local}
+        value={rowData && rowData.local}
         // onChange={(e) => eventHandleDetailsSOT(e)}
         onChange={(e: any) => {
           if (e.target.value !== null) {
@@ -2621,7 +2644,7 @@ function DelistsAddedToRange() {
   const onlineCFCPlaceholderTemplate = (rowData: any) => {
     return (
       <Select
-        value={rowData.onlineCFC}
+        value={rowData && rowData.onlineCFC}
         // onChange={(e) => eventHandleDetailsSOT(e)}
         onChange={(e: any) => {
           if (e.target.value !== null) {
@@ -2654,7 +2677,7 @@ function DelistsAddedToRange() {
   const onlineStorePickPlaceholderTemplate = (rowData: any) => {
     return (
       <Select
-        value={rowData.onlineStorePick}
+        value={rowData && rowData.onlineStorePick}
         // onChange={(e) => eventHandleDetailsSOT(e)}
         onChange={(e: any) => {
           if (e.target.value !== null) {
@@ -2687,7 +2710,7 @@ function DelistsAddedToRange() {
   const wholeSalePlaceHolderTemplate = (rowData: any) => {
     return (
       <Select
-        value={rowData.wholesale}
+        value={rowData && rowData.wholesale}
         // onChange={(e) => eventHandleDetailsSOT(e)}
         onChange={(e: any) => {
           if (e.target.value !== null) {
@@ -2723,7 +2746,7 @@ function DelistsAddedToRange() {
       <OutlinedInput
         margin="dense"
         className={classes.muiSelect}
-        value={rowData.comments}
+        value={rowData && rowData.comments}
         onChange={(e) => {
           if (e.target.value !== null) {
             setPlaceholderProducts((prevState: any) => {
@@ -3021,7 +3044,7 @@ function DelistsAddedToRange() {
         console.log('Success')
         setReplacementAssociationProduct((prevState: any) => {
           return prevState.map((state: any) => {
-            if (state.min === rowData.min) {
+            if (state._idCheck === rowData._idCheck) {
               return {
                 ...state,
                 replaceError: true,
@@ -3038,7 +3061,7 @@ function DelistsAddedToRange() {
         setReplaceErrorMsg(`Invalid Replacement MIN - ${rowData.replaceMin}`)
         setReplacementAssociationProduct((prevState: any) => {
           return prevState.map((state: any) => {
-            if (state.min === rowData.min) {
+            if (state._idCheck === rowData._idCheck) {
               return {
                 ...state,
                 replaceError: false,
@@ -3055,14 +3078,14 @@ function DelistsAddedToRange() {
     return (
       <div style={{ display: 'flex' }}>
         <SearchSelect
-          value={rowData.existingSupplierSite}
+          value={rowData && rowData.replaceMin}
           // onChange={handleBuyer}
           className={classes.muiSelect}
           onChange={(e: any) => {
             setReplaceError(false)
             setReplacementAssociationProduct((prevState: any) => {
               return prevState.map((state: any) => {
-                if (state.min === rowData.min) {
+                if (state._idCheck === rowData._idCheck) {
                   return {
                     ...state,
                     replaceMin: e.target.value,
@@ -3093,8 +3116,8 @@ function DelistsAddedToRange() {
   //  <DatePicker
   //         format="dd/MM/yy"
   //         value={
-  //           props.rowData['effectivedateto']
-  //             ? props.rowData['effectivedateto']
+  //           props.rowData['effectiveDateTo']
+  //             ? props.rowData['effectiveDateTo']
   //             : null
   //         }
   //         onChange={(date: any) => {
@@ -3104,7 +3127,7 @@ function DelistsAddedToRange() {
   //           //   return [
   //           //     {
   //           //       ...prevState[0],
-  //           //       effectivedateto: dateVal,
+  //           //       effectiveDateTo: dateVal,
   //           //     },
   //           //   ]
   //           // })
@@ -3122,7 +3145,10 @@ function DelistsAddedToRange() {
     return (
       <DatePicker
         format="dd/MM/yy"
-        value={rowData['effectivedateto'] ? rowData['effectivedateto'] : null}
+        value={
+          rowData &&
+          (rowData['effectiveDateTo'] ? rowData['effectiveDateTo'] : null)
+        }
         onChange={(date: any) => {
           let newDate = date.toISOString().split('T')[0]
           console.log('new Date', newDate)
@@ -3130,10 +3156,10 @@ function DelistsAddedToRange() {
           console.log(rowData)
           setReplacementAssociationProduct((prevState: any) => {
             return prevState.map((state: any) => {
-              if (state.min === rowData.min) {
+              if (state._idCheck === rowData._idCheck) {
                 return {
                   ...state,
-                  effectivedateto: newDate,
+                  effectiveDateTo: newDate,
                 }
               } else {
                 return state
@@ -3156,7 +3182,8 @@ function DelistsAddedToRange() {
       <DatePicker
         format="dd/MM/yy"
         value={
-          rowData['effectivedatefrom'] ? rowData['effectivedatefrom'] : null
+          rowData &&
+          (rowData['effectiveDateFrom'] ? rowData['effectiveDateFrom'] : null)
         }
         onChange={(date: any) => {
           let newDate = date.toISOString().split('T')[0]
@@ -3165,10 +3192,10 @@ function DelistsAddedToRange() {
           console.log(rowData)
           setReplacementAssociationProduct((prevState: any) => {
             return prevState.map((state: any) => {
-              if (state.min === rowData.min) {
+              if (state._idCheck === rowData._idCheck) {
                 return {
                   ...state,
-                  effectivedatefrom: newDate,
+                  effectiveDateFrom: newDate,
                 }
               } else {
                 return state
@@ -3186,11 +3213,11 @@ function DelistsAddedToRange() {
   const replacementCommentsTemplate = (rowData: any) => {
     return (
       <TextField
-        value={rowData.comments}
+        value={rowData && rowData.comments}
         onChange={(e: any) => {
           setReplacementAssociationProduct((prevState: any) => {
             return prevState.map((state: any) => {
-              if (state.min === rowData.min) {
+              if (state._idCheck === rowData._idCheck) {
                 return {
                   ...state,
                   comments: e.target.value,
@@ -3246,21 +3273,25 @@ function DelistsAddedToRange() {
       setImportedData((prevState: any) => {
         return prevState.map((state: any) => {
           let singleData = replacementAssociationProduct.filter(
-            (prod: any) => prod.min === state.min
+            (prod: any) => prod._idCheck === state._idCheck
           )
-          console.log(singleData[0])
-          if (state.min === singleData[0].min) {
-            return {
-              ...state,
-              ...singleData[0],
+          if (singleData && singleData.length === 1) {
+            console.log('singleData', singleData, state._idCheck)
+            if (state._idCheck === singleData[0]._idCheck) {
+              return {
+                ...state,
+                ...singleData[0],
+              }
+            } else {
+              return state
             }
           } else {
             return state
           }
         })
       })
-      setReplacementAssociationProduct([])
-      setSelectedProductListItems([])
+      setReplacementAssociationProduct(null)
+      setSelectedProductListItems(null)
       setOpenReplacementAssDialog(false)
     } else {
       setReplaceError(true)
@@ -3379,17 +3410,17 @@ function DelistsAddedToRange() {
                         body={
                           (col.field === 'delist_min_pin' &&
                             delistminpinTemplate) ||
-                          (col.field === 'replace_min_pin' &&
+                          (col.field === 'replaceMin' &&
                             replaceMin_Pin_Association_Template) ||
-                          (col.field === 'effectivedateto' &&
+                          (col.field === 'effectiveDateTo' &&
                             replaceEffectiveDateToTemplate) ||
-                          (col.field === 'effectivedatefrom' &&
+                          (col.field === 'effectiveDateFrom' &&
                             replaceEffectiveDateFromTemplate) ||
                           (col.field === 'comments' &&
                             replacementCommentsTemplate)
                         }
                         // editor={(props) =>
-                        //   col.field === 'effectivedateto' &&
+                        //   col.field === 'effectiveDateTo' &&
                         //   replaceEffectiveDateToEditor(props)
                         // }
                         bodyStyle={tableBodyStyle(col.width)}
